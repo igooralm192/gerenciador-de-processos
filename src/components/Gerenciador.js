@@ -2,13 +2,26 @@ import React, { Component } from 'react';
 import AddProcesso from './AddProcesso';
 import MostraProcessos from './MostraProcessos';
 
+class Processo {
+    constructor(id, tc, te, d, p) {
+        this.id = id;
+        this.tempoChegada = tc;
+        this.tempoExecucao = te;
+        this.deadline = d;
+        this.prioridade = p;
+    }
+}
+
 class Gerenciador extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            idProcessos: [],
-            processos: []
+            idProcessos: [1, 2],
+            processos: [
+                new Processo(1, null, null, null, null),
+                new Processo(2, null, null, null, null),
+            ]
         }
     }
 
@@ -30,13 +43,6 @@ class Gerenciador extends Component {
     }
 
     adicionaProcesso() {
-        let tc = parseInt($("#input-tempo-chegada").val());
-        let te = parseInt($("#input-tempo-execucao").val());
-        let d = parseInt($("#input-deadline").val());
-        let p = parseInt($("#input-prioridade").val());
-
-        if (isNaN(tc) || isNaN(te) || isNaN(d) || isNaN(p)) return;
-
         let idProcessos = this.state.idProcessos;
         let processos = this.state.processos;
         let menor = this.menorValor();
@@ -47,13 +53,7 @@ class Gerenciador extends Component {
             return a - b;
         })
         
-        processos.push({
-            id: menor,
-            tempoChegada: tc,
-            tempoExecucao: te,
-            deadline: d,
-            prioridade: p
-        })
+        processos.push(new Processo(menor, null, null, null, null),)
 
         processos.sort((a, b) => {
             return a.id - b.id;
@@ -68,6 +68,8 @@ class Gerenciador extends Component {
     removeProcesso(i) {
         let idProcessos = this.state.idProcessos;
         let processos = this.state.processos;
+
+        if (idProcessos.length == 2) return;
         
         let ind = idProcessos.indexOf(i);
         processos.splice(ind, 1)
@@ -78,7 +80,7 @@ class Gerenciador extends Component {
 
     render() {
         return (
-            <div id="gerenciador" className="ui placeholder segment">
+            <div id="gerenciador" className="ui segment">
                 <h1>Gerenciador de Processos</h1>
                 <div className="ui pointing secondary menu">
                     <a className="active item" data-tab="Entrada">Entrada</a>
@@ -89,40 +91,13 @@ class Gerenciador extends Component {
 						<div className="sixteen wide column">
 							<AddProcesso adicionaProcesso={() => this.adicionaProcesso()}/>
 						</div>
-						{
-							this.state.processos.length != 0 &&
-							<div className="sixteen wide column">
-								<MostraProcessos processos={this.state.processos} removeProcesso={(i) => this.removeProcesso(i)}/>
-							</div>
-						}
-						
-						
-						<div className="sixteen wide column">
-							<div className="ui form">
-								<div className="three fields">
-									
-									<div className="field">
-										<label>Escalonamento</label>
-										<select className="ui fluid dropdown">
-											<option value="FIFO">FIFO</option>
-											<option value="SJF">SJF</option>
-											<option value="EDF">EDF</option>
-											<option value="RR">RR</option>
-										</select>
-									</div>
-									<div className="field">
-										<label>Substituição</label>
-										<select className="ui fluid dropdown">
-											<option value="FIFO">FIFO</option>
-											<option value="MRU">MRU</option>
-										</select>
-									</div>
-									<div id="btn-executar" className="field">
-										<button className="ui fluid button">Executar</button>
-									</div>
-								</div>
-							</div>
-						</div>
+                        <div className="sixteen wide column">
+                            <MostraProcessos processos={this.state.processos} removeProcesso={(i) => this.removeProcesso(i)}/>
+                        </div>
+					
+                        <div id="btn-executar">
+                            <button className="ui fluid button">Executar</button>
+                        </div>
                     </div>
                     
                 </div>

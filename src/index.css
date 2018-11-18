@@ -40,9 +40,13 @@ body {
 	font-family: "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
 }
 
-#processes {
+#processos {
 	display: -webkit-box;
 	overflow-x: scroll;
+}
+
+#processos .ui.card {
+	width: 200px;
 }
 
 div[data-tab="Entrada"] {
@@ -50,6 +54,5 @@ div[data-tab="Entrada"] {
 }
 
 #btn-executar {
-	display: flex;
-	align-items: flex-end;
+
 }

@@ -10,8 +10,8 @@ class MostraProcessos extends Component {
         return (
             <div>
                 <h2>Processos</h2>
-                <div className="ui secondary segment">
-                    <div id="processes" className="ui cards">
+                <div className="ui placeholder segment">
+                    <div id="processos" className="ui cards">
                         {
                             this.props.processos.map((processo, i) => (
                                 <Processo key={i} processo={processo} removeProcesso={(i) => this.props.removeProcesso(i)}/>

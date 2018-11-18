@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 class Processo extends Component {
-
     render() {
         return (
             <div id={`processo${this.props.processo.id}`} className="ui card">
