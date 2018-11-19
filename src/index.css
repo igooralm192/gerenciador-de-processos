@@ -56,3 +56,24 @@ div[data-tab="Entrada"] {
 #btn-executar {
 
 }
+
+#box-execucao {
+	display: grid;
+	width: 100%;
+	height: 300px;
+	border: 1px solid black;
+	grid-template-columns: auto 1fr;
+}
+
+#id-processos {
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: 20px auto;
+}
+
+#box-gantt {
+	overflow-x: scroll;
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: 20px auto;
+}
