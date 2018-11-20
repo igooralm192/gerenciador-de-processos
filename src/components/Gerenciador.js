@@ -12,7 +12,9 @@ class Gerenciador extends Component {
     }
 
     componentDidMount() {
-        $(".ui.menu .item").tab();
+        
+
+        
     }
 
     render() {
@@ -21,12 +23,12 @@ class Gerenciador extends Component {
                 <h1>Gerenciador de Processos</h1>
                 <div className="ui pointing secondary menu">
                     <a className="active item" data-tab="Entrada">Entrada</a>
-                    <a className="item" data-tab="Execução">Execução</a>
+                    <a className="  item" data-tab="Execução">Execução</a>
                 </div>
                 <div className="ui active tab" data-tab="Entrada">
                     <Entrada/>
                 </div>
-                <div className="ui tab" data-tab="Execução">
+                <div className="ui  tab" data-tab="Execução">
                     <Execucao/>
                 </div>
             </div>
