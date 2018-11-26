@@ -57,37 +57,57 @@ div[data-tab="Entrada"] {
 
 }
 
-#box-execucao {
-	display: -webkit-box;
-	border: 1px solid red;
+#box-exibicao {
+	display: flex;
+	width: 100%;
+}
+
+#box-ids {
+	margin-right: 10px;
 	max-height: 300px;
 	overflow: hidden;
 }
 
-.col {
+.id-processo {
+	width: auto;
+	height: 40px;
+	background-color: transparent;
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	font-family: Ubuntu, sans-serif;
+	font-weight: bold;
+	color: #333;
+}
+
+#box-execucao {
+	display: -webkit-box;
+	max-height: 300px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	width: 100%;
+	color: #333;
+	font-weight: bold;
+}
+
+.coluna {
 	width: 40px;
 	height: 100%;
 }
 
-.cell {
+.celula {
 	width: auto;
 	height: 40px;
-	border: 1px solid green
+	border: 2px solid white;
+	background-color: transparent;
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	background-color: #dcdcdc
 }
 
-#mycel{
-	position: relative;
-}
-
-#box-time {
-	display: -webkit-box;
-	border: 1px solid red;
-	max-height: 300px;
-	overflow: hidden;
-}
-
-#box-time > div {
-	width: 40px;
-	height: 40px;
-	border: 1px solid green
+.celula.tempo {
+	background: transparent
 }

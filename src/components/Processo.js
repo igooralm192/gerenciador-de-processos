@@ -11,21 +11,21 @@ class Processo extends Component {
                             <div className="two fields">
                                 <div className="field">
                                     <label>Tempo de Chegada</label>
-                                    <input type="number" min={0} defaultValue={this.props.processo.tempoChegada}/>
+                                    <input onChange={(e) => this.props.onChange(e, this.props.processo.id, 1)} value={this.props.processo.tempoChegada}/>
                                 </div>
                                 <div className="field">
                                     <label>Tempo de Execução</label>
-                                    <input type="number" min={0} defaultValue={this.props.processo.tempoExecucao}/>
+                                    <input onChange={(e) => this.props.onChange(e, this.props.processo.id, 2)} value={this.props.processo.tempoExecucao}/>
                                 </div>
                             </div>
                             <div className="two fields">
                                 <div className="field">
                                     <label>Deadline</label>
-                                    <input type="number" min={0} defaultValue={this.props.processo.deadline}/>
+                                    <input onChange={(e) => this.props.onChange(e, this.props.processo.id, 3)} value={this.props.processo.deadline}/>
                                 </div>
                                 <div className="field">
                                     <label>Prioridade</label>
-                                    <input type="number" min={0} defaultValue={this.props.processo.prioridade}/>
+                                    <input onChange={(e) => this.props.onChange(e, this.props.processo.id, 4)} value={this.props.processo.prioridade}/>
                                 </div>
                             </div>
                         </div>
