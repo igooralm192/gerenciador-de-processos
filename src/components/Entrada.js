@@ -113,6 +113,10 @@ class Entrada extends Component {
         processos.sort((a, b) => {
             return a.id - b.id;
         })
+        console.log($("#processo1").innerWidth())
+        $("#processos").css({
+            width: "+=214px"
+        })
 
         this.setState({
             idProcessos,

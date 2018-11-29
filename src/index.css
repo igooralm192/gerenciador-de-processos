@@ -40,9 +40,13 @@ body {
 	font-family: "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
 }
 
+#box-processos {
+	overflow-x: scroll;
+}
+
 #processos {
 	display: -webkit-box;
-	overflow-x: scroll;
+	width: 435px;
 }
 
 #processos .ui.card {
@@ -63,9 +67,10 @@ div[data-tab="Entrada"] {
 }
 
 #box-ids {
-	margin-right: 10px;
 	max-height: 300px;
-	overflow: hidden;
+	overflow-y: hidden;
+	width: 50px;
+	margin-top: 40px;
 }
 
 .id-processo {
@@ -79,6 +84,21 @@ div[data-tab="Entrada"] {
 	font-family: Ubuntu, sans-serif;
 	font-weight: bold;
 	color: #333;
+}
+
+#box-sla {
+	display: flex;
+	width: calc(100% - 50px);
+	flex-wrap: wrap;
+}
+
+#box-tempo {
+	display: -webkit-box;
+	max-height: 300px;
+	overflow-x: hidden;
+	width: 100%;
+	color: #333;
+	font-weight: bold;
 }
 
 #box-execucao {
@@ -96,6 +116,10 @@ div[data-tab="Entrada"] {
 	height: 100%;
 }
 
+.coluna.tempo {
+	height: 40px;
+}
+
 .celula {
 	width: auto;
 	height: 40px;
@@ -108,6 +132,25 @@ div[data-tab="Entrada"] {
 	background-color: #dcdcdc
 }
 
-.celula.tempo {
+.coluna.tempo .celula {
 	background: transparent
+}
+
+#box-memoria {
+	display: flex;
+	flex-wrap: wrap;
+	border-radius: 3px;
+	border: 2px solid #333;
+}
+
+.celula-memoria {
+	display: flex;
+	width: 10%;
+	height: 40px;
+	border: 1px solid #eee;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	font-family: Ubuntu;
+	font-weight: bold;
 }

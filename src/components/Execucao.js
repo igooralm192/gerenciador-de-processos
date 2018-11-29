@@ -20,16 +20,19 @@ class Execucao extends Component {
         this.redimensionar = this.redimensionar.bind(this);
         this.proximo = this.proximo.bind(this);
         this.alterarVelocidade = this.alterarVelocidade.bind(this);
+        this.parar = this.parar.bind(this);
     }
 
     componentDidMount() {        
         let redimensionar = this.redimensionar;
         let alterarVelocidade = this.alterarVelocidade;
+        let parar = this.parar;
 
         $(".ui.menu .item").tab({
             onVisible: function(path) {
                 $("#velocidade").range('set value', 1000);
                 if (path === "Execução") redimensionar();
+                else parar();
             }
         });
 
@@ -42,7 +45,7 @@ class Execucao extends Component {
             max: 0,
             step: 1,
             start: 0,
-            onChange: (val) => $("#box-execucao").scrollLeft(val)
+            onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
         });
 
         $("#velocidade").range({
@@ -58,7 +61,7 @@ class Execucao extends Component {
 
     alterarVelocidade(val) {
         let iniciado = this.state.iniciado;
-        console.log(iniciado, val)
+
         if (iniciado) {
             clearInterval(this.state.intervalo)
             let intervalo = setInterval(this.proximo, val);
@@ -81,7 +84,6 @@ class Execucao extends Component {
         for (let i=1; i<=totalIni+Math.abs(translatado)/40; i++) {
             colunas.push((
                 <div className="coluna">
-                    <div className="celula tempo">{i-1}</div>
                     {
                         this.props.processos.map((p, j) => (
                             <div key={j} className="celula"></div>
@@ -97,7 +99,7 @@ class Execucao extends Component {
             max: Math.abs(translatado),
             step: 1,
             start: Math.abs(translatado),
-            onChange: (val) => $("#box-execucao").scrollLeft(val)
+            onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
         })
 
         $("#box-execucao").animate({
@@ -123,7 +125,6 @@ class Execucao extends Component {
         if (tempo >= (totalIni-1)/2) {
             colunas.push((
                 <div className="coluna">
-                    <div className="celula tempo">{colunas.length}</div>
                     {
                         this.props.processos.map((p, j) => (
                             <div key={j} className="celula"></div>
@@ -136,7 +137,7 @@ class Execucao extends Component {
         this.setState({tempo: tempo+1, colunas, translatado}, () => {
             if (tempo >= (totalIni-1)/2+1) {
                 
-                $("#box-execucao").animate({
+                $("#box-execucao, #box-tempo").animate({
                     scrollLeft: Math.abs(translatado)
                 }, velocidade/2)
     
@@ -145,7 +146,7 @@ class Execucao extends Component {
                     max: Math.abs(translatado),
                     step: 1,
                     start: Math.abs(translatado),
-                    onChange: (val) => $("#box-execucao").scrollLeft(val)
+                    onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
                 })
     
             }
@@ -163,6 +164,42 @@ class Execucao extends Component {
         this.setState({iniciado: false})
     }
 
+    parar() {
+        clearInterval(this.state.intervalo);
+        let alterarVelocidade = this.alterarVelocidade;
+
+        
+
+        this.setState({
+            iniciado: false,
+            velocidade: 1000,
+            tempo: 0,
+            intervalo: null,
+            translatado: 0,
+        }, () => {
+            $("#box-execucao, #box-tempo").stop();
+            $("#box-execucao, #box-tempo").scrollLeft(0);
+            
+            $("#alcance").range({
+                min: 0,
+                max: 0,
+                step: 1,
+                start: 0,
+                onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
+            });
+    
+            $("#velocidade").range({
+                min: 100,
+                max: 2000,
+                start: 1000,
+                step: 10,
+                onChange: (val) => alterarVelocidade(val)
+            });
+
+            
+        })
+    }
+
     scrollDown() {
         $("#box-ids").scrollTop($("#box-execucao").scrollTop()) 
     }
@@ -174,20 +211,31 @@ class Execucao extends Component {
                     <div className="sixteen wide column">
                         <div id="box-exibicao">
                             <div id="box-ids">
-                                <div className="id-processo"></div>
                                 {
                                     this.props.processos.map((p, i) => (
                                         <div key={i} className="id-processo">P{p.id}</div>
                                     ))
                                 }
                             </div>
-                            <div id="box-execucao" onScroll={() => this.scrollDown()}>
-                                {
-                                    this.state.colunas.map(col => (
-                                        col
-                                    ))
-                                }
+                            <div id="box-sla">
+                                <div id="box-tempo">
+                                    {
+                                        this.state.colunas.map((col, i) => (
+                                            <div className="coluna tempo">
+                                                <div className="celula ">{i}</div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                                <div id="box-execucao" onScroll={() => this.scrollDown()}>
+                                    {
+                                        this.state.colunas.map(col => (
+                                            col
+                                        ))
+                                    }
+                                </div>
                             </div>
+                            
                         </div>                                                
                     </div>
                 </div>
@@ -197,11 +245,11 @@ class Execucao extends Component {
                         
                 <div className="two column row">
                     <div className="column">
-                        <button className="ui icon  button" onClick={() => this.iniciar()}>
-                            <i className="play icon"/>
+                        <button className={`ui icon button`} onClick={!this.state.iniciado?() => this.iniciar():() => this.pausar()}>
+                            <i className={`${!this.state.iniciado?"play":"pause"} icon`}/>
                         </button>
-                        <button className="ui icon button" onClick={() => this.pausar()}>
-                            <i className="pause icon"/>
+                        <button className="ui icon button" onClick={() => this.parar()}>
+                            <i className="stop icon"/>
                         </button>
                     </div>
                     
@@ -210,6 +258,21 @@ class Execucao extends Component {
                         <div id="velocidade" className="ui range"></div>
                     </div>
                     
+                </div>
+
+                <div className="row">
+                    <div className="column">
+                        <h3>RAM</h3>
+                        <div id="box-memoria" className="">
+                            {
+                                Array(50).fill(null).map((val, i) => (
+                                    <div className="celula-memoria">
+                                        {i+1}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
                 </div>
                 
             </div>
