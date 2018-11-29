@@ -10,11 +10,16 @@ class MostraProcessos extends Component {
         return (
             <div>
                 <h2>Processos</h2>
-                <div className="ui placeholder segment">
+                <div id="box-processos" className="ui placeholder segment">
                     <div id="processos" className="ui cards">
                         {
                             this.props.processos.map((processo, i) => (
-                                <Processo key={i} processo={processo} removeProcesso={(i) => this.props.removeProcesso(i)}/>
+                                <Processo 
+                                    key={i} 
+                                    processo={processo} 
+                                    removeProcesso={(i) => this.props.removeProcesso(i)}
+                                    onChange={(e, id, inp) => this.props.onChange(e, id, inp)}
+                                    />
                             ))
                         }
                     </div>
