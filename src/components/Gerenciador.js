@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import Execucao from './Execucao';
 import Entrada from './Entrada';
-
-class Processo {
-    constructor(id, tc, te, d, p) {
-        this.id = id;
-        this.tempoChegada = tc;
-        this.tempoExecucao = te;
-        this.deadline = d;
-        this.prioridade = p;
-    }
-}
+import Processo from '../estruturas/Processo'
 
 class Gerenciador extends Component {
     constructor(props) {
@@ -25,7 +16,8 @@ class Gerenciador extends Component {
                 sobrecarga: 0,
                 quantum: 0,
                 escalonamento: "FIFO",
-                substituicao: "FIFO"
+                substituicao: "FIFO",
+                qtdPaginas: 7
             }
         }
     }
@@ -56,4 +48,3 @@ class Gerenciador extends Component {
 }
 
 export default Gerenciador;
-export {Processo}

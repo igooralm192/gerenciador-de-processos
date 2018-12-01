@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
+import PriorityQueue from 'priority-queue-js';
+
 import 'semantic-ui-range/range.css'
 import 'semantic-ui-range/range.js'
+
+// EX - Execução
+// ES - Espera
+// DI - Disco
+// S - Sobrecarga
+// DE - Deadline
+
 class Execucao extends Component {
     constructor(props) {
         super(props);
-
-        console.log(props)
         
+        this.escalonamentos = {
+            "FIFO": new PriorityQueue({
+                comparator: (a, b) => {return a - b;}
+            })
+        }
         this.state = {
             iniciado: false,
             velocidade: 1000,
@@ -15,24 +27,39 @@ class Execucao extends Component {
             intervalo: null,
             translatado: 0,
             totalIni: 0,
+
+            estruturas: {
+                filaProntos: [],
+                memoriaReal: [],
+                memoriaVirtual: []
+            }
         }
 
         this.redimensionar = this.redimensionar.bind(this);
         this.proximo = this.proximo.bind(this);
         this.alterarVelocidade = this.alterarVelocidade.bind(this);
         this.parar = this.parar.bind(this);
+        this.setState = this.setState.bind(this);
     }
 
     componentDidMount() {        
+        let escalonamento = this.props.dadosEntrada.escalonamento;
+        let substituicao = this.props.dadosEntrada.substituicao;
+        let estruturas = this.state.estruturas;
         let redimensionar = this.redimensionar;
         let alterarVelocidade = this.alterarVelocidade;
         let parar = this.parar;
+        let setState = this.setState;
 
         $(".ui.menu .item").tab({
             onVisible: function(path) {
                 $("#velocidade").range('set value', 1000);
-                if (path === "Execução") redimensionar();
-                else parar();
+                if (path === "Execução") {
+                    redimensionar();
+
+                    estruturas.filaProntos = this.escalonamento[escalonamento];
+                    setState({estruturas});
+                } else parar();
             }
         });
 
@@ -69,8 +96,6 @@ class Execucao extends Component {
         } else {
             this.setState({velocidade: val});
         }
-
-        
     }
 
     redimensionar() {
@@ -115,8 +140,42 @@ class Execucao extends Component {
         let translatado = this.state.translatado;
         let totalIni = this.state.totalIni;
         let velocidade = this.state.velocidade;
+        let estruturas = this.state.estruturas;
+        let processos = this.props.processos;
+        let qtdPaginas = this.props.dadosEntrada.qtdPaginas;
+        let memoriaVirtual = this.state.memoriaVirtual;
+        let memoriaReal = this.state.memoriaReal;
 
-        console.log(tempo, totalIni)
+        for (let i=0; i<processos.length; i++) {
+            if (processos[i].tempoChegada == tempo) {
+                estruturas.filaProntos.push(processos[i]);
+            }
+        }
+
+        if (estruturas.filaProntos.length != 0) {
+            let topo = estruturas.filaProntos.peek();
+
+            for (let i=0; i<processos.length; i++) {
+            
+                if (processos[i] == topo) {
+
+                }
+                let atual = estruturas.filaProntos.pop();
+                
+                if (!atual.verificarPaginas(memoriaVirtual, qtdPaginas)) {
+                    atual.estado = "D";
+                } 
+            }
+        }
+        
+
+        
+
+        for (let i=0; i<processos.length; i++) {
+            if (atual == processos[i]) {
+
+            }
+        }
 
         if (tempo >= (totalIni-1)/2+1) {
             translatado += 40;
@@ -167,8 +226,6 @@ class Execucao extends Component {
     parar() {
         clearInterval(this.state.intervalo);
         let alterarVelocidade = this.alterarVelocidade;
-
-        
 
         this.setState({
             iniciado: false,

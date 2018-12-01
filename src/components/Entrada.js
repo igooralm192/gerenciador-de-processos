@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import MostraProcessos from './MostraProcessos';
-import {Processo} from './Gerenciador'
+import Processo from '../estruturas/Processo'
 
 
 class Entrada extends Component {
