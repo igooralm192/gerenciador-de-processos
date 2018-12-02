@@ -60,6 +60,16 @@ div[data-tab="Entrada"] {
 #btn-executar {
 
 }
+#tempo {
+	display: block;
+	padding-top: 20px;
+	padding-left: 15px;
+	font-size: 1.2em;
+}
+#tempo > span{
+	color: black;
+	font-weight: bold;
+}
 
 #box-exibicao {
 	display: flex;
@@ -124,7 +134,6 @@ div[data-tab="Entrada"] {
 	width: auto;
 	height: 40px;
 	border: 2px solid white;
-	background-color: transparent;
 	display: grid;
 	justify-content: center;
 	align-items: center;
@@ -136,7 +145,41 @@ div[data-tab="Entrada"] {
 	background: transparent
 }
 
-#box-memoria {
+#box-memoria-virtual {
+	display: -webkit-box;
+	overflow-x: scroll;
+}
+
+.celula-virtual {
+	display: flex;
+	width: 60px;
+	text-align: center;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	
+}
+.celula-virtual > div {
+	width: 100%;
+}
+.celula-virtual .id, .celula-virtual .processo {
+	font-size: 1em;
+	padding: 5px;
+}
+.celula-virtual .referencia {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background-color: #dcdcdc;
+	font-family: Ubuntu;
+	font-size: 1.5em;
+	color: #db2828
+}
+
+.box-memoria {
 	display: flex;
 	flex-wrap: wrap;
 	border-radius: 3px;

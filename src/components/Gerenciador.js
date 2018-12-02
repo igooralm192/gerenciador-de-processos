@@ -15,9 +15,10 @@ class Gerenciador extends Component {
             dadosEntrada: {
                 sobrecarga: 0,
                 quantum: 0,
+                qtdPaginas: 0,
+                tempoDisco: 0,
                 escalonamento: "FIFO",
                 substituicao: "FIFO",
-                qtdPaginas: 7
             }
         }
     }

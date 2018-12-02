@@ -5,11 +5,12 @@ class Processo {
         this.tempoExecucao = te;
         this.deadline = d;
         this.prioridade = p;
-        this.estado = null
+        this.tempoDecorrido = 1;
+        this.estado = "Nada";
     }
 
-    verificarPaginas(memoriaVirtual, qtdPaginas) {
-        let ini = id*qtdPaginas;
+    verificaPaginas(memoriaVirtual, qtdPaginas) {
+        let ini = (this.id-1)*qtdPaginas;
 
         for (let j=ini; j<ini+qtdPaginas; j++) {
             if (memoriaVirtual[j] == null) return false;

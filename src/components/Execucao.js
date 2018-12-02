@@ -1,24 +1,35 @@
 import React, { Component } from 'react';
-import PriorityQueue from 'priority-queue-js';
+import { FIFO } from '../algoritmos/escalonamento/FIFO'
+import { MemFIFO } from '../algoritmos/substituicao/FIFO'
 
 import 'semantic-ui-range/range.css'
 import 'semantic-ui-range/range.js'
 
-// EX - Execução
-// ES - Espera
-// DI - Disco
-// S - Sobrecarga
-// DE - Deadline
-
 class Execucao extends Component {
     constructor(props) {
         super(props);
-        
-        this.escalonamentos = {
-            "FIFO": new PriorityQueue({
-                comparator: (a, b) => {return a - b;}
-            })
+        this.algoritmos = {
+            escalonamento: {
+                "FIFO": function(processos, qtdPaginas, tempoDisco) {
+                    return new FIFO(processos, qtdPaginas, tempoDisco);
+                }
+            },
+            substituicao: {
+                "FIFO": function() {
+                    return new MemFIFO();
+                }
+            }
         }
+
+        this.color = {
+            "Execução": "#2ecc71",
+            "Sobrecarga": "#e74c3c",
+            "Espera - FP": "#fef160",
+            "Espera - D": "#f4b350",
+            "Disco": "#8c14fc",
+            "Deadline": "#2e3131"
+        }
+
         this.state = {
             iniciado: false,
             velocidade: 1000,
@@ -27,12 +38,16 @@ class Execucao extends Component {
             intervalo: null,
             translatado: 0,
             totalIni: 0,
-
             estruturas: {
-                filaProntos: [],
-                memoriaReal: [],
+                execucao: null,
+                memoriaReal: {
+                    memoria: []
+                },
                 memoriaVirtual: []
-            }
+            },
+            processoAtual: null,
+            estados: [],
+            terminou: false,
         }
 
         this.redimensionar = this.redimensionar.bind(this);
@@ -42,9 +57,8 @@ class Execucao extends Component {
         this.setState = this.setState.bind(this);
     }
 
-    componentDidMount() {        
-        let escalonamento = this.props.dadosEntrada.escalonamento;
-        let substituicao = this.props.dadosEntrada.substituicao;
+    componentDidMount() {  
+        let algoritmos = this.algoritmos;
         let estruturas = this.state.estruturas;
         let redimensionar = this.redimensionar;
         let alterarVelocidade = this.alterarVelocidade;
@@ -53,12 +67,20 @@ class Execucao extends Component {
 
         $(".ui.menu .item").tab({
             onVisible: function(path) {
-                $("#velocidade").range('set value', 1000);
+                $("#velocidade").range('set value', 500);
                 if (path === "Execução") {
                     redimensionar();
+                    
+                    setState((prevState, props) => {
+                        let processos = props.processos;
+                        let dadosEntrada = props.dadosEntrada;
 
-                    estruturas.filaProntos = this.escalonamento[escalonamento];
-                    setState({estruturas});
+                        estruturas.execucao = algoritmos.escalonamento[dadosEntrada.escalonamento](processos, dadosEntrada.qtdPaginas, dadosEntrada.tempoDisco);
+                        estruturas.memoriaReal = algoritmos.substituicao[dadosEntrada.substituicao]();
+                        estruturas.memoriaVirtual = Array(dadosEntrada.qtdPaginas*processos.length).fill(null)
+                        console.log(estruturas)
+                        return {estruturas};
+                    });
                 } else parar();
             }
         });
@@ -76,10 +98,10 @@ class Execucao extends Component {
         });
 
         $("#velocidade").range({
-            min: 100,
-            max: 2000,
-            start: 1000,
-            step: 10,
+            min: 0,
+            max: 1000,
+            start: 500,
+            step: 1,
             onChange: (val) => alterarVelocidade(val)
         });
 
@@ -91,15 +113,16 @@ class Execucao extends Component {
 
         if (iniciado) {
             clearInterval(this.state.intervalo)
-            let intervalo = setInterval(this.proximo, val);
-            this.setState({intervalo, velocidade: val});
+            let intervalo = setInterval(this.proximo, 1000-val);
+            this.setState({intervalo, velocidade: 1000-val});
         } else {
-            this.setState({velocidade: val});
+            this.setState({velocidade: 1000-val});
         }
     }
 
     redimensionar() {
         let translatado = this.state.translatado;
+        let estados = this.state.estados;
 
         let largura = document.getElementById("box-execucao").clientWidth;
         let totalIni = parseInt(largura/40 + (largura%40>0));
@@ -116,6 +139,7 @@ class Execucao extends Component {
                     }
                 </div>
             ))
+            if (estados[i-1] != undefined) this.atualizarColuna(i-1, colunas, estados[i-1]);
         }
 
 
@@ -123,13 +147,11 @@ class Execucao extends Component {
             min: 0,
             max: Math.abs(translatado),
             step: 1,
-            start: Math.abs(translatado),
+            start: 0,
             onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
         })
-
-        $("#box-execucao").animate({
-            scrollLeft: Math.abs(translatado)
-        }, this.state.velocidade/2)
+        
+        $("#box-execucao, #box-tempo").scrollLeft(0)
 
         this.setState({colunas, totalIni})
     }
@@ -140,42 +162,35 @@ class Execucao extends Component {
         let translatado = this.state.translatado;
         let totalIni = this.state.totalIni;
         let velocidade = this.state.velocidade;
+        let estados = this.state.estados;
         let estruturas = this.state.estruturas;
         let processos = this.props.processos;
         let qtdPaginas = this.props.dadosEntrada.qtdPaginas;
-        let memoriaVirtual = this.state.memoriaVirtual;
-        let memoriaReal = this.state.memoriaReal;
-
-        for (let i=0; i<processos.length; i++) {
-            if (processos[i].tempoChegada == tempo) {
-                estruturas.filaProntos.push(processos[i]);
-            }
-        }
-
-        if (estruturas.filaProntos.length != 0) {
-            let topo = estruturas.filaProntos.peek();
-
-            for (let i=0; i<processos.length; i++) {
-            
-                if (processos[i] == topo) {
-
-                }
-                let atual = estruturas.filaProntos.pop();
-                
-                if (!atual.verificarPaginas(memoriaVirtual, qtdPaginas)) {
-                    atual.estado = "D";
-                } 
-            }
-        }
+        let memoriaVirtual = estruturas.memoriaVirtual;
+        let memoriaReal = estruturas.memoriaReal;
+        let processoAtual = this.state.processoAtual;
         
+        let [proxEstado, atual] = estruturas.execucao.proximoEstado(
+            tempo, 
+            processoAtual, 
+            memoriaVirtual, 
+            memoriaReal
+        );
 
-        
+        console.log(memoriaVirtual, memoriaReal.memoria)
+        console.log(tempo, proxEstado, processoAtual)
 
-        for (let i=0; i<processos.length; i++) {
-            if (atual == processos[i]) {
-
+        let terminou = true;
+        for (let i in proxEstado) {
+            if (proxEstado[i] != "Acabou") {
+                terminou = false;
+                break;
             }
         }
+
+        estados.push(proxEstado);
+
+        if (terminou) return this.terminarExecucao(estados);
 
         if (tempo >= (totalIni-1)/2+1) {
             translatado += 40;
@@ -191,9 +206,11 @@ class Execucao extends Component {
                     }
                 </div>
             ))
-        }
+        } 
 
-        this.setState({tempo: tempo+1, colunas, translatado}, () => {
+        this.atualizarColuna(tempo, colunas, proxEstado);
+
+        this.setState({tempo: tempo+1, colunas, translatado, estados, processoAtual: atual}, () => {
             if (tempo >= (totalIni-1)/2+1) {
                 
                 $("#box-execucao, #box-tempo").animate({
@@ -207,10 +224,21 @@ class Execucao extends Component {
                     start: Math.abs(translatado),
                     onChange: (val) => $("#box-execucao, #box-tempo").scrollLeft(val)
                 })
-    
             }
         })
-        
+    }
+
+    atualizarColuna(tempo, colunas, proxEstado) {
+        let celulas = [];
+
+        for (let i=0; i<this.props.processos.length; i++) {
+            celulas.push((
+                <div key={i} className="celula" style={{backgroundColor: this.color[proxEstado[i]]}}></div>
+            ))
+        }
+
+        let coluna = React.createElement("div", {className: 'coluna'}, celulas);
+        colunas.splice(tempo, 1, coluna);
     }
 
     iniciar() {
@@ -223,16 +251,52 @@ class Execucao extends Component {
         this.setState({iniciado: false})
     }
 
+    terminarExecucao(estados) {
+        let total = 0;
+        for (const i in estados) {
+            let soma = 0;
+            for (const j in estados[i]) {
+                if (estados[i][j] == "Nada" || estados[i][j] == "Acabou") continue;
+                soma++;
+            }
+            total += soma/this.props.processos.length;
+        }
+        
+        alert('Turnaround Médio: '+total)
+
+        clearInterval(this.state.intervalo);
+
+        this.setState({iniciado: false, terminou: true});
+    }
+
     parar() {
         clearInterval(this.state.intervalo);
         let alterarVelocidade = this.alterarVelocidade;
+        let estruturas = this.state.estruturas;
+        let processos = this.props.processos;
+        let algoritmos = this.algoritmos;
+        let { escalonamento, substituicao, qtdPaginas, tempoDisco } = this.props.dadosEntrada;
+        
+        for (let i in processos) {
+            processos[i].tempoDecorrido = 1;
+            processos[i].estado = "Nada";
+        }
 
+        estruturas.execucao = algoritmos.escalonamento[escalonamento](processos, qtdPaginas, tempoDisco);
+        estruturas.memoriaReal = algoritmos.substituicao[substituicao]();
+        estruturas.memoriaVirtual = Array(qtdPaginas*processos.length).fill(null)
+        
         this.setState({
             iniciado: false,
             velocidade: 1000,
             tempo: 0,
             intervalo: null,
             translatado: 0,
+            estruturas,
+            iniciado: false,
+            terminou: false,
+            estados: [],
+            processoAtual: null
         }, () => {
             $("#box-execucao, #box-tempo").stop();
             $("#box-execucao, #box-tempo").scrollLeft(0);
@@ -246,14 +310,13 @@ class Execucao extends Component {
             });
     
             $("#velocidade").range({
-                min: 100,
-                max: 2000,
-                start: 1000,
-                step: 10,
+                min: 0,
+                max: 1000,
+                start: 500,
+                step: 1,
                 onChange: (val) => alterarVelocidade(val)
             });
-
-            
+            this.redimensionar();
         })
     }
 
@@ -264,6 +327,11 @@ class Execucao extends Component {
     render() {
         return (
             <div className="ui grid">
+                <div className="">
+                    <div className="column inline field">
+                        <label id="tempo">Tempo: <span>{this.state.tempo-1}</span></label>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="sixteen wide column">
                         <div id="box-exibicao">
@@ -302,7 +370,7 @@ class Execucao extends Component {
                         
                 <div className="two column row">
                     <div className="column">
-                        <button className={`ui icon button`} onClick={!this.state.iniciado?() => this.iniciar():() => this.pausar()}>
+                        <button className={`ui icon ${this.state.terminou?'disabled':''} button`} onClick={!this.state.iniciado?() => this.iniciar():() => this.pausar()}>
                             <i className={`${!this.state.iniciado?"play":"pause"} icon`}/>
                         </button>
                         <button className="ui icon button" onClick={() => this.parar()}>
@@ -311,7 +379,7 @@ class Execucao extends Component {
                     </div>
                     
                     <div className="column">
-                        <label>Velocidade: <span>{this.state.velocidade/1000}x</span></label>
+                        <label>Velocidade: <span>{(1000-Math.floor(this.state.velocidade))/500}x</span></label>
                         <div id="velocidade" className="ui range"></div>
                     </div>
                     
@@ -319,19 +387,37 @@ class Execucao extends Component {
 
                 <div className="row">
                     <div className="column">
-                        <h3>RAM</h3>
-                        <div id="box-memoria" className="">
+                        <h3>Virtual</h3>
+                        <div id="box-memoria-virtual">
                             {
-                                Array(50).fill(null).map((val, i) => (
-                                    <div className="celula-memoria">
-                                        {i+1}
+                                this.state.estruturas.memoriaVirtual.map((r, i) => (
+                                    <div key={i} className="celula-virtual">
+                                        <div className="id">{i}</div>
+                                        <div className="referencia">
+                                            {r}
+                                        </div>
+                                        <div className="processo">P{Math.floor(i/this.props.dadosEntrada.qtdPaginas)+1}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    
+                </div>
+                <div className="row">  
+                    <div className="column">
+                        <h3>RAM</h3>
+                        <div className="box-memoria">
+                            {
+                                this.state.estruturas.memoriaReal.memoria.map((val, i) => (
+                                    <div key={i} className="celula-memoria">
+                                        {val}
                                     </div>
                                 ))
                             }
                         </div>
                     </div>
                 </div>
-                
             </div>
         )
     }
