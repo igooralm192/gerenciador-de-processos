@@ -46,12 +46,19 @@ class SJF {
                 memReal.alocaPaginas(topo, this.qtdPaginas, memVirtual);
 
                 topo.estado = "Espera - FP";
-                topo.tempoDecorrido = 0;
+                topo.tempoDecorrido = 1;
                 this.filaProntos.queue(topo);
+
+                if (!this.filaDisco.vazio()) {
+                    let topo = this.filaDisco.topo();
+
+                    topo.estado = "Disco";
+                    topo.tempoDecorrido = 1;
+                }
             } else topo.tempoDecorrido++;
         }
 
-        while (processoAtual == null && this.filaProntos.length != 0 && this.filaDisco.vazio()) {
+        while (processoAtual == null && this.filaProntos.length != 0) {
             let topo = this.filaProntos.dequeue();  
 
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
@@ -64,9 +71,17 @@ class SJF {
                     this.filaProntos.queue(topo);
 
                 } else {
-                    topo.estado = "Disco";
-                    this.filaDisco.push(topo);
-                    break;
+                    console.log('oiii')
+                    topo.tempoDecorrido = 1;
+                    if (this.filaDisco.vazio()) {
+                        console.log('vazioo')
+                        topo.estado = "Disco";
+                        this.filaDisco.push(topo);
+                    } else {
+                        console.log('nao vazioo')
+                        topo.estado = "Espera - D";
+                        this.filaDisco.push(topo);
+                    }
                 }
             } else {
                 topo.estado = "Execução"
