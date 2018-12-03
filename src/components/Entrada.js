@@ -176,7 +176,7 @@ class Entrada extends Component {
                     <div className="ui grid">
                         <div className="column">
                             <div className="ui form">
-                                <div className="three fields">
+                                <div className="six fields">
                                     <div className="field">
                                         <label>Sobrecarga</label>
                                         <input id="input-sobrecarga" onChange={(e) => this.handleSobrecarga(e)} value={this.state.dadosEntrada.sobrecarga}/>
@@ -184,6 +184,15 @@ class Entrada extends Component {
                                     <div className="field">
                                         <label>Quantum</label>
                                         <input id="input-quantum" onChange={(e) => this.handleQuantum(e)} value={this.state.dadosEntrada.quantum}/>
+                                    </div>
+                                    
+                                    <div className="field">
+                                        <label>Qtd. Páginas</label>
+                                        <input id="input-qtdpaginas" onChange={(e) => this.handleQtdPaginas(e)} value={this.state.dadosEntrada.qtdPaginas}/>
+                                    </div>
+                                    <div className="field">
+                                        <label>Tempo no Disco</label>
+                                        <input id="input-tempo-disco" onChange={(e) => this.handleTempoDisco(e)} value={this.state.dadosEntrada.tempoDisco}/>
                                     </div>
                                     <div className="field">
                                         <label>Escalonamento</label>
@@ -194,18 +203,6 @@ class Entrada extends Component {
                                             <option value="RR">RR</option>
                                         </select>
                                     </div>
-                                
-                                </div>
-                                <div className="three fields">
-                                    <div className="field">
-                                        <label>N. Páginas / Processo</label>
-                                        <input id="input-qtdpaginas" onChange={(e) => this.handleQtdPaginas(e)} value={this.state.dadosEntrada.qtdPaginas}/>
-                                    </div>
-                                    <div className="field">
-                                        <label>Tempo no Disco</label>
-                                        <input id="input-tempo-disco" onChange={(e) => this.handleTempoDisco(e)} value={this.state.dadosEntrada.tempoDisco}/>
-                                    </div>
-                                    
                                     <div className="field">
                                         <label>Substituição</label>
                                         <select className="ui fluid dropdown" onChange={(e) => this.handleSubstituicao(e)}>
@@ -214,6 +211,7 @@ class Entrada extends Component {
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div className="ui divider"></div>
                                 
                             </div>

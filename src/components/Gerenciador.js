@@ -31,7 +31,7 @@ class Gerenciador extends Component {
 
     render() {
         return (
-            <div id="gerenciador" className="ui segment">
+            <div id="gerenciador">
                 <h1>Gerenciador de Processos</h1>
                 <div className="ui pointing secondary menu">
                     <a className="active item" data-tab="Entrada">Entrada</a>
