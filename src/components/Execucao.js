@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FIFO } from '../algoritmos/escalonamento/FIFO'
+import { SJF } from '../algoritmos/escalonamento/SJF'
 import { MemFIFO } from '../algoritmos/substituicao/FIFO'
 
 import 'semantic-ui-range/range.css'
@@ -12,6 +13,9 @@ class Execucao extends Component {
             escalonamento: {
                 "FIFO": function(processos, qtdPaginas, tempoDisco) {
                     return new FIFO(processos, qtdPaginas, tempoDisco);
+                },
+                "SJF": function(processos, qtdPaginas, tempoDisco) {
+                    return new SJF(processos, qtdPaginas, tempoDisco);
                 }
             },
             substituicao: {
