@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { FIFO } from '../algoritmos/escalonamento/FIFO'
 import { SJF } from '../algoritmos/escalonamento/SJF'
 import { ROBIN } from '../algoritmos/escalonamento/ROBIN'
+
 import { MemFIFO } from '../algoritmos/substituicao/FIFO'
+import { MemMRU } from '../algoritmos/substituicao/MRU';
 
 import 'semantic-ui-range/range.css'
 import 'semantic-ui-range/range.js'
+
 
 class Execucao extends Component {
     constructor(props) {
@@ -25,6 +28,9 @@ class Execucao extends Component {
             substituicao: {
                 "FIFO": function() {
                     return new MemFIFO();
+                },
+                "MRU": function() {
+                    return new MemMRU();
                 }
             }
         }

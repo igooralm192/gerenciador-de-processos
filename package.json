@@ -14,24 +14,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.3.1",
-    "js-priority-queue": "^0.1.5",
-    "priority-queue-js": "^0.3.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "semantic-ui-range": "github:Buzut/semantic-ui-range",
-    "tinyqueue": "^2.0.0",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.1",
     "gh-pages": "^2.0.1",
-    "style-loader": "^0.23.1"
+    "js-priority-queue": "^0.1.5",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "semantic-ui-range": "^1.0.1",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.27.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }
