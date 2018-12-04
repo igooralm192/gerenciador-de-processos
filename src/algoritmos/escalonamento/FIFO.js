@@ -16,7 +16,6 @@ class FIFO {
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
-        let terminou = true;
         let estados = [];
         
         for (const i in this.processos) {
@@ -43,7 +42,7 @@ class FIFO {
             if (topo.tempoDecorrido == this.tempoDisco) {
                 this.filaDisco.pop();
 
-                memReal.alocaPaginas(topo, this.qtdPaginas, memVirtual);
+                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                 topo.estado = "Espera - FP";
                 topo.tempoDecorrido = 1;
@@ -71,14 +70,11 @@ class FIFO {
                     this.filaProntos.queue(topo);
 
                 } else {
-                    console.log('oiii')
                     topo.tempoDecorrido = 1;
                     if (this.filaDisco.vazio()) {
-                        console.log('vazioo')
                         topo.estado = "Disco";
                         this.filaDisco.push(topo);
                     } else {
-                        console.log('nao vazioo')
                         topo.estado = "Espera - D";
                         this.filaDisco.push(topo);
                     }

@@ -9,17 +9,29 @@ class MemFIFO {
         if (this.indiceAtual == 50) this.indiceAtual = 0;
     }
 
-    alocaPaginas(processo, qtdPaginas, memVirtual) {
+    alocaPaginas(atual, processo, qtdPaginas, memVirtual) {
         let ini = (processo.id-1)*qtdPaginas;
         
         for (let j=ini; j<ini+qtdPaginas; j++) {
             let ind = this.indiceAtual;
 
-            if (this.memoria[ind] != null) memVirtual[ this.memoria[ind] ] = null;
+            if (memVirtual[j] != null) continue;
+
+            if (this.memoria[ind] != null) {
+                let indProcesso = Math.floor(this.memoria[ind]/qtdPaginas)+1;
+                while ((atual != null && indProcesso == atual.id) || indProcesso == processo.id) {
+                    this.proximoIndice();
+                    ind = this.indiceAtual;
+                    indProcesso = Math.floor(this.memoria[ind]/qtdPaginas)+1;
+                }
+                memVirtual[ this.memoria[ind] ] = null;
+            } 
+
             this.memoria[ind] = j;
             memVirtual[j] = ind;
 
             this.proximoIndice();
+            
         }
 
     }
