@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FIFO } from '../algoritmos/escalonamento/FIFO'
 import { SJF } from '../algoritmos/escalonamento/SJF'
+import { ROBIN } from '../algoritmos/escalonamento/ROBIN'
 import { MemFIFO } from '../algoritmos/substituicao/FIFO'
 
 import 'semantic-ui-range/range.css'
@@ -16,6 +17,9 @@ class Execucao extends Component {
                 },
                 "SJF": function(processos, qtdPaginas, tempoDisco) {
                     return new SJF(processos, qtdPaginas, tempoDisco);
+                },
+                "RR": function(processos, qtdPaginas, tempoDisco) {
+                    return new ROBIN(processos, qtdPaginas, tempoDisco);
                 }
             },
             substituicao: {

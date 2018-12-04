@@ -23,6 +23,10 @@ class Fila {
     esvaziar() {
         while (!this.vazio()) this.pop();
     }
+
+    length(){
+        return this.fila.length;
+    }
 }
 
 export { Fila }
