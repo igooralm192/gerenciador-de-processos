@@ -64,7 +64,7 @@ class SJF {
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
 
-                    memReal.alocaPaginas(topo, this.qtdPaginas, memVirtual);
+                    memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                     topo.estado = "Espera - FP";
                     topo.tempoDecorrido = 1;
