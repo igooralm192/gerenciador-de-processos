@@ -11,8 +11,6 @@ body {
 
 #root {
 	width: 100%;
-	background: #fafafa;
-	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -24,14 +22,12 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 50px 15%;
 }
 
 #gerenciador {
-	width: 90%;
-	height: 90%;
+	width: 100%;
+	height: 100%;
 	padding: 2em;
-
 }
 
 #gerenciador > h1 {
