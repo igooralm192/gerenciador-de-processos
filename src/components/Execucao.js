@@ -49,7 +49,7 @@ class Execucao extends Component {
             estruturas: {
                 execucao: null,
                 memoriaReal: {
-                    memoria: []
+                    memoria: Array(50).fill(null)
                 },
                 memoriaVirtual: []
             },
@@ -74,15 +74,27 @@ class Execucao extends Component {
         let setState = this.setState;
 
         $(".ui.menu .item").tab({
-            onVisible: function(path) {
+            onLoad: function(path) {
                 $("#velocidade").range('set value', 500);
                 if (path === "Execução") {
                     redimensionar();
+
                     
+
                     setState((prevState, props) => {
                         let processos = props.processos;
                         let dadosEntrada = props.dadosEntrada;
 
+                        $("#range-virtual").range({
+                            min: 0,
+                            max: dadosEntrada.qtdPaginas*30-Math.floor($("#box-memoria-virtual .paginas").innerWidth()),
+                            step: 1,
+                            start: 0,
+                            onChange: (val) => {
+                                $("#box-memoria-virtual .paginas").scrollLeft(val)
+                            }
+                        });
+                        console.log('eae')
                         estruturas.execucao = algoritmos.escalonamento[dadosEntrada.escalonamento](processos, dadosEntrada.qtdPaginas, dadosEntrada.tempoDisco);
                         estruturas.memoriaReal = algoritmos.substituicao[dadosEntrada.substituicao]();
                         estruturas.memoriaVirtual = Array(dadosEntrada.qtdPaginas*processos.length).fill(null)
@@ -333,6 +345,19 @@ class Execucao extends Component {
     }
 
     render() {
+        let qtdPaginas = this.props.dadosEntrada.qtdPaginas;
+        let pagsVirtuais = Array(this.props.processos.length).fill(null);
+        let memVirtual = this.state.estruturas.memoriaVirtual;
+        console.log(this.state)
+        
+        for (let i in pagsVirtuais) {
+            let ini = i*qtdPaginas;
+            if (qtdPaginas == 0) pagsVirtuais[i] = Array(qtdPaginas).fill(null);
+            else pagsVirtuais[i] = memVirtual.slice(ini, ini+qtdPaginas);
+        }
+        
+        
+        console.log(this.props, pagsVirtuais)
         return (
             <div className="ui grid">
                 <div className="">
@@ -387,17 +412,43 @@ class Execucao extends Component {
                     </div>
                     
                     <div className="column">
-                        <label>Velocidade: <span>{(1000-Math.floor(this.state.velocidade))/500}x</span></label>
+                        <label>Velocidade: <span>{Math.floor((1000-this.state.velocidade)/500)}x</span></label>
                         <div id="velocidade" className="ui range"></div>
                     </div>
                     
                 </div>
 
-                <div className="row">
+                
+                <div className="two column stackable row"> 
                     <div className="column">
                         <h3>Virtual</h3>
                         <div id="box-memoria-virtual">
-                            {
+                            <div className="ids">
+                                {
+                                    pagsVirtuais.map((p, i) => (
+                                        <div key={i} className="id">P{i+1}</div>
+                                    ))
+                                }
+                            </div>
+                                
+                            <div className="paginas">
+                                {
+                                    pagsVirtuais.map((pagina, i) => (
+                                        <div key={i} className="pags-processo">
+                                            {
+                                                pagina != null && pagina.map((v, j) => (
+                                                    <div className="pagina">
+                                                        <div className="referencia">{v}</div>
+                                                        <div className="id">{i*this.props.dadosEntrada.qtdPaginas+j}</div>
+                                                    </div>
+                                                ))
+                                            }
+                                            
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            {/* {
                                 this.state.estruturas.memoriaVirtual.map((r, i) => (
                                     <div key={i} className="celula-virtual">
                                         <div className="id">{i}</div>
@@ -407,12 +458,12 @@ class Execucao extends Component {
                                         <div className="processo">P{Math.floor(i/this.props.dadosEntrada.qtdPaginas)+1}</div>
                                     </div>
                                 ))
-                            }
+                            } */}
+                        </div>
+                        <div>
+                            <div id="range-virtual" className="ui range"></div>
                         </div>
                     </div>
-                    
-                </div>
-                <div className="row">  
                     <div className="column">
                         <h3>RAM</h3>
                         <div className="box-memoria">
