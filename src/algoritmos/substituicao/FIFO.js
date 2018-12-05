@@ -9,6 +9,8 @@ class MemFIFO {
         if (this.indiceAtual == 50) this.indiceAtual = 0;
     }
 
+    atualizaReferencia() {}
+
     alocaPaginas(atual, processo, qtdPaginas, memVirtual) {
         let ini = (processo.id-1)*qtdPaginas;
         
@@ -40,7 +42,6 @@ class MemFIFO {
             this.proximoIndice();
             
         }
-
     }
 }
 

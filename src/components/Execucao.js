@@ -15,14 +15,14 @@ class Execucao extends Component {
         super(props);
         this.algoritmos = {
             escalonamento: {
-                "FIFO": function(processos, qtdPaginas, tempoDisco) {
-                    return new FIFO(processos, qtdPaginas, tempoDisco);
+                "FIFO": function(processos, dados) {
+                    return new FIFO(processos, dados);
                 },
-                "SJF": function(processos, qtdPaginas, tempoDisco) {
-                    return new SJF(processos, qtdPaginas, tempoDisco);
+                "SJF": function(processos, dados) {
+                    return new SJF(processos, dados);
                 },
-                "RR": function(processos, qtdPaginas, tempoDisco) {
-                    return new ROBIN(processos, qtdPaginas, tempoDisco);
+                "RR": function(processos, dados) {
+                    return new ROBIN(processos, dados);
                 }
             },
             substituicao: {
@@ -100,10 +100,11 @@ class Execucao extends Component {
                                 $("#box-memoria-virtual .paginas").scrollLeft(val)
                             }
                         });
-                        console.log('eae')
-                        estruturas.execucao = algoritmos.escalonamento[dadosEntrada.escalonamento](processos, dadosEntrada.qtdPaginas, dadosEntrada.tempoDisco);
+
+                        estruturas.execucao = algoritmos.escalonamento[dadosEntrada.escalonamento](processos, dadosEntrada);
                         estruturas.memoriaReal = algoritmos.substituicao[dadosEntrada.substituicao]();
                         estruturas.memoriaVirtual = Array(dadosEntrada.qtdPaginas*processos.length).fill(null)
+                        
                         console.log(estruturas)
                         return {estruturas};
                     });
@@ -308,7 +309,7 @@ class Execucao extends Component {
             processos[i].estado = "Nada";
         }
 
-        estruturas.execucao = algoritmos.escalonamento[escalonamento](processos, qtdPaginas, tempoDisco);
+        estruturas.execucao = algoritmos.escalonamento[escalonamento](processos, this.props.dadosEntrada);
         estruturas.memoriaReal = algoritmos.substituicao[substituicao]();
         estruturas.memoriaVirtual = Array(qtdPaginas*processos.length).fill(null)
         

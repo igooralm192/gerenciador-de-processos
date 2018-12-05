@@ -2,13 +2,16 @@ import PriorityQueue from 'js-priority-queue'
 import { Fila } from '../../estruturas/Fila';
 
 class SJF {
-    constructor(processos, qtdPaginas, tempoDisco) {
+    constructor(processos, dados) {
         this.processos = processos;
-        this.qtdPaginas = qtdPaginas;
-        this.tempoDisco = tempoDisco;
+        this.qtdPaginas = dados.qtdPaginas;
+        this.tempoDisco = dados.tempoDisco;
         this.filaProntos = new PriorityQueue({
             comparator: (a, b) => {
-                if (a.tempoExecucao == b.tempoExecucao) return a.tempoChegada - b.tempoChegada;
+                if (a.tempoExecucao == b.tempoExecucao) {
+                    if (a.tempoChegada == b.tempoChegada) return a.id - b.id;
+                    return a.tempoChegada - b.tempoChegada
+                }
                 return a.tempoExecucao - b.tempoExecucao;
             }
         });
