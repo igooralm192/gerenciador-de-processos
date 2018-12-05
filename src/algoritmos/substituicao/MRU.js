@@ -9,7 +9,20 @@ class MemMRU {
     }
 
     proximoIndice() { 
-        
+        this.indiceAtual++;
+        if (this.indiceAtual == 50) this.indiceAtual = 0;
+    }
+
+    atualizaReferencia(processo) {
+        let ref = null;
+        for (let i in this.referencias) {
+            if (this.referencias[i].id == processo.id) {
+                ref = this.referencias[i];
+                this.referencias.splice(i, 1);
+                break;
+            }
+        }
+        this.referencias.push(ref);
     }
 
     alocaPaginas(atual, processo, qtdPaginas, memVirtual) {
@@ -25,7 +38,7 @@ class MemMRU {
             if (this.memoria[ind] != null) {
                 let i = 0;
                 
-                while (this.referencias[i].id == atual.id || this.referencias[i].id == processo.id) i++;
+                while ((atual != null && this.referencias[i].id == atual.id) || this.referencias[i].id == processo.id) i++;
                 let menorRef = this.referencias[i];
 
                 var pagina = menorRef.paginas.shift();
@@ -43,8 +56,7 @@ class MemMRU {
                 memVirtual[j] = ind;
                 paginas.push({id: j, referencia: ind});
 
-                this.indiceAtual++;
-                if (this.indiceAtual == 50) this.indiceAtual = 0;
+                this.proximoIndice();
             }
         }
 

@@ -81,6 +81,7 @@ class FIFO {
                 }
             } else {
                 topo.estado = "Execução"
+                memReal.atualizaReferencia(topo);
                 if (topo.tempoExecucao == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
