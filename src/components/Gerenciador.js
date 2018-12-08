@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import Execucao from './Execucao';
 import Entrada from './Entrada';
-
-class Processo {
-    constructor(id, tc, te, d, p) {
-        this.id = id;
-        this.tempoChegada = tc;
-        this.tempoExecucao = te;
-        this.deadline = d;
-        this.prioridade = p;
-    }
-}
+import Processo from '../estruturas/Processo'
 
 class Gerenciador extends Component {
     constructor(props) {
@@ -24,8 +15,10 @@ class Gerenciador extends Component {
             dadosEntrada: {
                 sobrecarga: 0,
                 quantum: 0,
+                qtdPaginas: 0,
+                tempoDisco: 0,
                 escalonamento: "FIFO",
-                substituicao: "FIFO"
+                substituicao: "FIFO",
             }
         }
     }
@@ -38,7 +31,7 @@ class Gerenciador extends Component {
 
     render() {
         return (
-            <div id="gerenciador" className="ui segment">
+            <div id="gerenciador">
                 <h1>Gerenciador de Processos</h1>
                 <div className="ui pointing secondary menu">
                     <a className="active item" data-tab="Entrada">Entrada</a>
@@ -56,4 +49,3 @@ class Gerenciador extends Component {
 }
 
 export default Gerenciador;
-export {Processo}

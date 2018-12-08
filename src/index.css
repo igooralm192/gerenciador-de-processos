@@ -11,8 +11,6 @@ body {
 
 #root {
 	width: 100%;
-	background: #fafafa;
-	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -24,14 +22,12 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 50px 15%;
 }
 
 #gerenciador {
-	width: 90%;
-	height: 90%;
+	width: 100%;
+	height: 100%;
 	padding: 2em;
-
 }
 
 #gerenciador > h1 {
@@ -61,6 +57,36 @@ div[data-tab="Entrada"] {
 
 }
 
+.row.info {
+	padding-bottom: 0 !important;
+}
+#tempo {
+	display: block;
+	padding-top: 5px;
+	padding-left: 10px;	
+	font-size: 1.2em;
+}
+#tempo > span{
+	color: black;
+	font-weight: bold;
+}
+
+.legenda .cor {
+	position: relative;
+	display: inline-block;	
+	width: 20px;
+	height: 20px;
+	top: 5px;
+	margin-right: 5px;
+	background-color: aqua;
+}
+
+.legenda .descricao {
+	display: inline-block;
+	width: calc(100% - 25px);
+	font-size: .9em;
+}
+
 #box-exibicao {
 	display: flex;
 	width: 100%;
@@ -73,7 +99,7 @@ div[data-tab="Entrada"] {
 	margin-top: 40px;
 }
 
-.id-processo {
+#box-ids .id-processo {
 	width: auto;
 	height: 40px;
 	background-color: transparent;
@@ -124,7 +150,6 @@ div[data-tab="Entrada"] {
 	width: auto;
 	height: 40px;
 	border: 2px solid white;
-	background-color: transparent;
 	display: grid;
 	justify-content: center;
 	align-items: center;
@@ -136,7 +161,123 @@ div[data-tab="Entrada"] {
 	background: transparent
 }
 
-#box-memoria {
+.buffer {
+	display: block;
+}
+
+.buffer .label {
+	font-size: 1.2em;
+	padding-left: 3px;
+	margin-bottom: 3px;
+}
+
+.buffer .label i {
+	
+}
+
+.buffer .box-fila {
+	display: flex;
+}
+
+.buffer .topo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 25px;
+	height: 25px;
+	margin-right: 10px;
+	background-color: #2ecc71;
+	border-radius: 50%;
+	color: white;
+	font-family: Ubuntu, sans-serif;
+	font-weight: bold;
+	font-size: 0.85em;
+}
+
+.buffer .fila {
+	width: calc(100% - 35px);
+	display: -webkit-box;
+	overflow-x: auto;
+}
+
+.buffer .fila .item {
+	display: flex;
+	flex-wrap: wrap;
+	width: 25px;
+	margin-right: 10px;
+}
+
+.buffer .fila .item .processo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 25px;
+	border-radius: 50%;
+	color: #333;
+	font-family: Ubuntu, sans-serif;
+	font-weight: bold;
+	font-size: 0.85em;
+}
+
+.buffer .fila .item .indice {
+	width: 100%;
+	text-align: center;
+	font-size: 0.7em;
+	font-weight: bold;
+}
+#box-memoria-virtual {
+	width: 100%;
+	display: flex;
+	height: 200px;
+	overflow-y: scroll;
+}
+
+#box-memoria-virtual .ids {
+	padding-right: 10px;
+}
+
+#box-memoria-virtual .ids .id {
+	height: 40px;
+	font-weight: bold;
+}
+
+#box-memoria-virtual .paginas {
+	flex: 1;
+	width: 300px;
+	height: 100%;
+	overflow-x: hidden;
+}
+
+#box-memoria-virtual .paginas .pags-processo {
+	width: auto;
+	display: -webkit-box;
+}
+
+#box-memoria-virtual .paginas .pags-processo .pagina {
+	width: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+#box-memoria-virtual .paginas .pags-processo .pagina .referencia {
+	width: 20px;
+	height: 20px;
+	font-size: 0.9em;
+	font-weight: bold;
+	background-color: #ddd;
+}
+
+#box-memoria-virtual .paginas .pags-processo .pagina .id {
+	width: 100%;
+	font-size: 0.7em;
+	
+}
+
+.box-memoria {
 	display: flex;
 	flex-wrap: wrap;
 	border-radius: 3px;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import MostraProcessos from './MostraProcessos';
-import {Processo} from './Gerenciador'
+import Processo from '../estruturas/Processo'
 
 
 class Entrada extends Component {
@@ -16,6 +16,8 @@ class Entrada extends Component {
             dadosEntrada: {
                 sobrecarga: 0,
                 quantum: 0,
+                qtdPaginas: 0,
+                tempoDisco: 0,
                 escalonamento: "FIFO",
                 substituicao: "FIFO"
             }
@@ -23,6 +25,8 @@ class Entrada extends Component {
 
         this.handleSobrecarga = this.handleSobrecarga.bind(this);
         this.handleQuantum = this.handleQuantum.bind(this);
+        this.handleQtdPaginas = this.handleQtdPaginas.bind(this);
+        this.handleTempoDisco = this.handleTempoDisco.bind(this);
         this.handleEscalonamento = this.handleEscalonamento.bind(this);
         this.handleSubstituicao = this.handleSubstituicao.bind(this);
     }
@@ -54,6 +58,32 @@ class Entrada extends Component {
 
         if (!isNaN(val)) {
             dadosEntrada.quantum = val;
+            this.setState({dadosEntrada})
+        }
+    }
+
+    handleQtdPaginas(e) {
+        let val = e.target.value;
+        let dadosEntrada = this.state.dadosEntrada;
+
+        if (val == "") val = 0;
+        val = parseInt(val)
+
+        if (!isNaN(val)) {
+            dadosEntrada.qtdPaginas = val;
+            this.setState({dadosEntrada})
+        }
+    }
+
+    handleTempoDisco(e) {
+        let val = e.target.value;
+        let dadosEntrada = this.state.dadosEntrada;
+
+        if (val == "") val = 0;
+        val = parseInt(val)
+
+        if (!isNaN(val)) {
+            dadosEntrada.tempoDisco = val;
             this.setState({dadosEntrada})
         }
     }
@@ -146,7 +176,7 @@ class Entrada extends Component {
                     <div className="ui grid">
                         <div className="column">
                             <div className="ui form">
-                                <div className="four fields">
+                                <div className="six fields">
                                     <div className="field">
                                         <label>Sobrecarga</label>
                                         <input id="input-sobrecarga" onChange={(e) => this.handleSobrecarga(e)} value={this.state.dadosEntrada.sobrecarga}/>
@@ -154,6 +184,15 @@ class Entrada extends Component {
                                     <div className="field">
                                         <label>Quantum</label>
                                         <input id="input-quantum" onChange={(e) => this.handleQuantum(e)} value={this.state.dadosEntrada.quantum}/>
+                                    </div>
+                                    
+                                    <div className="field">
+                                        <label>Qtd. Páginas</label>
+                                        <input id="input-qtdpaginas" onChange={(e) => this.handleQtdPaginas(e)} value={this.state.dadosEntrada.qtdPaginas}/>
+                                    </div>
+                                    <div className="field">
+                                        <label>Tempo no Disco</label>
+                                        <input id="input-tempo-disco" onChange={(e) => this.handleTempoDisco(e)} value={this.state.dadosEntrada.tempoDisco}/>
                                     </div>
                                     <div className="field">
                                         <label>Escalonamento</label>
@@ -172,6 +211,7 @@ class Entrada extends Component {
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div className="ui divider"></div>
                                 
                             </div>
