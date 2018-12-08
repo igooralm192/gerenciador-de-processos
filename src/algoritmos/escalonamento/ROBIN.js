@@ -1,9 +1,10 @@
-import PriorityQueue from 'js-priority-queue'
 import { Fila } from '../../estruturas/Fila';
 
 class ROBIN {
     constructor(processos, dados) {
         this.processos = processos;
+        this.sobrecarga = dados.sobrecarga;
+        this.quantum = dados.quantum;
         this.qtdPaginas = dados.qtdPaginas;
         this.tempoDisco = dados.tempoDisco;
         this.filaProntos = new Fila();
@@ -17,7 +18,6 @@ class ROBIN {
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
-        let terminou = true;
         let estados = [];
         
         for (const i in this.processos) {
@@ -25,42 +25,26 @@ class ROBIN {
 
                 this.processos[i].estado = "Espera - FP";
                 this.processos[i].tempoDecorrido = 1;
-                //this.filaProntos.queue(this.processos[i])
+
                 this.filaProntos.push(this.processos[i]);
             }
         }
 
-        /*if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
-                if (processoAtual.tempoDecorrido == processoAtual.tempoExecucao) {
-                    processoAtual.estado = "Acabou"
-                    processoAtual = null;
-                } else processoAtual.tempoDecorrido++;
-            }
-        }*/
-
         if (processoAtual != null) {
-            //alert('tempo execucao'+processoAtual.tempoExecucao)
-            //alert('tempo decorrido'+processoAtual.tempoDecorrido)
             if (processoAtual.estado == "Execução") {
-                if ((processoAtual.tempoDecorrido == 2 /*quantum*/) && (processoAtual.tempoExecucao > 1)) {
-                    //alert('aviso 47')
+                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucao > 0)) {
                     processoAtual.estado = "Sobrecarga";
                     processoAtual.tempoDecorrido = 1;
-                    processoAtual.tempoExecucao--;
-                    /*this.filaProntos.push(processoAtual);
-                    processoAtual = null;*/
-                } else if ((processoAtual.tempoDecorrido < 2 /*quantum*/) && (processoAtual.tempoExecucao > 1)) {
-                    //alert('aviso 52')
+
+                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucao > 0)) {
                     processoAtual.tempoDecorrido++;
                     processoAtual.tempoExecucao--;
-                }else if (processoAtual.tempoExecucao == 1){
-                    //alert('aviso ')
+                }else if (processoAtual.tempoExecucao == 0){
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
                 }
-            }else if(processoAtual.estado == "Sobrecarga"){
-                if(processoAtual.tempoDecorrido == 1 /*sobrecarga*/){
+            } else if(processoAtual.estado == "Sobrecarga"){
+                if(processoAtual.tempoDecorrido == this.sobrecarga){
                     processoAtual.estado = "Espera - FP";
                     processoAtual.tempoDecorrido = 1;
                     this.filaProntos.push(processoAtual);
@@ -78,31 +62,39 @@ class ROBIN {
                 memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                 topo.estado = "Espera - FP";
-                topo.tempoDecorrido = 0;
+                topo.tempoDecorrido = 1;
                 this.filaProntos.push(topo);
-                //this.filaProntos.queue(topo);
+
+                if (!this.filaDisco.vazio()) {
+                    let topo = this.filaDisco.topo();
+
+                    topo.estado = "Disco";
+                    topo.tempoDecorrido = 1;
+                }
             } else topo.tempoDecorrido++;
         }
 
-        while (processoAtual == null && this.filaProntos.length() != 0 && this.filaDisco.vazio()) {
-            let topo = this.filaProntos.topo();
+        while (processoAtual == null && this.filaProntos.fila.length != 0) {
+            const topo = this.filaProntos.topo(); 
             this.filaProntos.pop();
-            //let topo = this.filaProntos.dequeue();  
 
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
-
                     memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                     topo.estado = "Espera - FP";
                     topo.tempoDecorrido = 1;
                     this.filaProntos.push(topo);
-                    //this.filaProntos.queue(topo);
 
                 } else {
-                    topo.estado = "Disco";
-                    this.filaDisco.push(topo);
-                    break;
+                    topo.tempoDecorrido = 1;
+                    if (this.filaDisco.vazio()) {
+                        topo.estado = "Disco";
+                        this.filaDisco.push(topo);
+                    } else {
+                        topo.estado = "Espera - D";
+                        this.filaDisco.push(topo);
+                    }
                 }
             } else {
                 topo.estado = "Execução"
@@ -111,6 +103,7 @@ class ROBIN {
                     processoAtual = null;
                 } else {
                     topo.tempoDecorrido = 1;
+                    topo.tempoExecucao--;
                     processoAtual = topo;
                     break;
                 }
@@ -123,7 +116,7 @@ class ROBIN {
             estados.push( this.processos[i].estado )
         }
 
-        return [estados, processoAtual]
+        return [estados, processoAtual, this.filaProntos, this.filaDisco]
     }
 
     limpar() {

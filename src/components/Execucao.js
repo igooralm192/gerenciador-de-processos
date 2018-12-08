@@ -371,9 +371,16 @@ class Execucao extends Component {
         
         let filaProntos = [];
         if (this.state.filaProntos != null) {
-            for (let i in this.state.filaProntos.priv.data) {
-                filaProntos.push("P"+this.state.filaProntos.priv.data[i].id);
+            if (this.state.filaProntos.fila != undefined) {
+                for (let i in this.state.filaProntos.fila) {
+                    filaProntos.push("P"+this.state.filaProntos.fila[i].id);
+                }
+            } else {
+                for (let i in this.state.filaProntos.priv.data) {
+                    filaProntos.push("P"+this.state.filaProntos.priv.data[i].id);
+                }
             }
+            
         }
 
         let filaDisco = [];
