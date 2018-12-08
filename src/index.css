@@ -56,15 +56,35 @@ div[data-tab="Entrada"] {
 #btn-executar {
 
 }
+
+.row.info {
+	padding-bottom: 0 !important;
+}
 #tempo {
 	display: block;
-	padding-top: 20px;
-	padding-left: 15px;
+	padding-top: 5px;
+	padding-left: 10px;	
 	font-size: 1.2em;
 }
 #tempo > span{
 	color: black;
 	font-weight: bold;
+}
+
+.legenda .cor {
+	position: relative;
+	display: inline-block;	
+	width: 20px;
+	height: 20px;
+	top: 5px;
+	margin-right: 5px;
+	background-color: aqua;
+}
+
+.legenda .descricao {
+	display: inline-block;
+	width: calc(100% - 25px);
+	font-size: .9em;
 }
 
 #box-exibicao {
@@ -141,6 +161,71 @@ div[data-tab="Entrada"] {
 	background: transparent
 }
 
+.buffer {
+	display: block;
+}
+
+.buffer .label {
+	font-size: 1.2em;
+	padding-left: 3px;
+	margin-bottom: 3px;
+}
+
+.buffer .label i {
+	
+}
+
+.buffer .box-fila {
+	display: flex;
+}
+
+.buffer .topo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 25px;
+	height: 25px;
+	margin-right: 10px;
+	background-color: #2ecc71;
+	border-radius: 50%;
+	color: white;
+	font-family: Ubuntu, sans-serif;
+	font-weight: bold;
+	font-size: 0.85em;
+}
+
+.buffer .fila {
+	width: calc(100% - 35px);
+	display: -webkit-box;
+	overflow-x: auto;
+}
+
+.buffer .fila .item {
+	display: flex;
+	flex-wrap: wrap;
+	width: 25px;
+	margin-right: 10px;
+}
+
+.buffer .fila .item .processo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 25px;
+	border-radius: 50%;
+	color: #333;
+	font-family: Ubuntu, sans-serif;
+	font-weight: bold;
+	font-size: 0.85em;
+}
+
+.buffer .fila .item .indice {
+	width: 100%;
+	text-align: center;
+	font-size: 0.7em;
+	font-weight: bold;
+}
 #box-memoria-virtual {
 	width: 100%;
 	display: flex;

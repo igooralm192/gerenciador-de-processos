@@ -55,11 +55,14 @@ class Execucao extends Component {
             estruturas: {
                 execucao: null,
                 memoriaReal: {
-                    memoria: Array(50).fill(null)
+                    memoria: Array(50).fill(null),
+                    ultimasModificacoes: []
                 },
                 memoriaVirtual: []
             },
             processoAtual: null,
+            filaProntos: null,
+            filaDisco: null,
             estados: [],
             terminou: false,
         }
@@ -196,8 +199,10 @@ class Execucao extends Component {
         let memoriaVirtual = estruturas.memoriaVirtual;
         let memoriaReal = estruturas.memoriaReal;
         let processoAtual = this.state.processoAtual;
+
+        memoriaReal.ultimasModificacoes = [];
         
-        let [proxEstado, atual] = estruturas.execucao.proximoEstado(
+        let [proxEstado, atual, filaProntos, filaDisco] = estruturas.execucao.proximoEstado(
             tempo, 
             processoAtual, 
             memoriaVirtual, 
@@ -237,7 +242,7 @@ class Execucao extends Component {
 
         this.atualizarColuna(tempo, colunas, proxEstado);
 
-        this.setState({tempo: tempo+1, colunas, translatado, estados, processoAtual: atual}, () => {
+        this.setState({tempo: tempo+1, colunas, translatado, estados, processoAtual: atual, filaProntos, filaDisco}, () => {
             if (tempo >= (totalIni-1)/2+1) {
                 
                 $("#box-execucao, #box-tempo").animate({
@@ -323,7 +328,9 @@ class Execucao extends Component {
             iniciado: false,
             terminou: false,
             estados: [],
-            processoAtual: null
+            processoAtual: null,
+            filaProntos: null,
+            filaDisco: null
         }, () => {
             $("#box-execucao, #box-tempo").stop();
             $("#box-execucao, #box-tempo").scrollLeft(0);
@@ -355,7 +362,6 @@ class Execucao extends Component {
         let qtdPaginas = this.props.dadosEntrada.qtdPaginas;
         let pagsVirtuais = Array(this.props.processos.length).fill(null);
         let memVirtual = this.state.estruturas.memoriaVirtual;
-        console.log(this.state)
         
         for (let i in pagsVirtuais) {
             let ini = i*qtdPaginas;
@@ -363,13 +369,58 @@ class Execucao extends Component {
             else pagsVirtuais[i] = memVirtual.slice(ini, ini+qtdPaginas);
         }
         
+        let filaProntos = [];
+        if (this.state.filaProntos != null) {
+            for (let i in this.state.filaProntos.priv.data) {
+                filaProntos.push("P"+this.state.filaProntos.priv.data[i].id);
+            }
+        }
+
+        let filaDisco = [];
+        if (this.state.filaDisco != null) {
+            for (let i in this.state.filaDisco.fila) {
+                filaDisco.push("P"+this.state.filaDisco.fila[i].id);
+            }
+        }
         
-        console.log(this.props, pagsVirtuais)
+        console.log('state', this.state)
         return (
             <div className="ui grid">
-                <div className="">
-                    <div className="column inline field">
+                <div className="row info">
+                    <div className="four wide column">
                         <label id="tempo">Tempo: <span>{this.state.tempo-1}</span></label>
+                    </div>
+                    <div className="twelve wide column">
+                        <div className="ui stackable grid container">
+                            <div style={{paddingBottom: 0}} className="three column row">
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#2ecc71"}} className="cor"></label>
+                                    <span className="descricao">Execução</span>
+                                </div>
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#fef160"}} className="cor"></label>
+                                    <span className="descricao">Espera na fila de prontos</span>
+                                </div>
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#e74c3c"}} className="cor"></label>
+                                    <span className="descricao">Sobrecarga</span>
+                                </div>
+                            </div>
+                            <div style={{paddingTop: 0}} className="three column row">
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#8c14fc"}} className="cor"></label>
+                                    <span className="descricao">Disco</span>
+                                </div>
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#f4b350"}} className="cor"></label>
+                                    <span className="descricao">Espera na fila do disco</span>
+                                </div>
+                                <div className="legenda inline field column">
+                                    <label style={{backgroundColor: "#2e3131"}} className="cor"></label>
+                                    <span className="descricao">Deadline</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="row">
@@ -419,10 +470,57 @@ class Execucao extends Component {
                     </div>
                     
                     <div className="column">
-                        <label>Velocidade: <span>{Math.floor((1000-this.state.velocidade)/500)}x</span></label>
+                        <label>Velocidade: <span>{((1000-this.state.velocidade)/500).toFixed(2)}x</span></label>
                         <div id="velocidade" className="ui range"></div>
                     </div>
                     
+                </div>
+
+                <div className="two column row">
+                    <div className="column">
+                        <div className="buffer">
+                            <div className="label">
+                                <i className="arrow alternate circle down outline icon"></i>
+                                <span>Executando</span>
+                            </div>
+                            <div id="fila-prontos" className="box-fila">
+                                <div style={{backgroundColor: "#2ecc71"}} className="topo">{this.state.processoAtual!=null&&!this.state.terminou?"P"+this.state.processoAtual.id:""}</div>
+                                <div className="fila">
+                                    {
+                                        filaProntos.map((item, i) => (
+                                            <div className="item">
+                                                <div style={{backgroundColor: "#f0d74d"}} className="processo">{item}</div>
+                                                <div className="indice">{i+1}</div>
+                                            </div>
+                                        ))
+                                    }
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="column">
+                        <div className="buffer">
+                            <div className="label">
+                                <i className="arrow alternate circle down outline icon"></i>
+                                <span>No Disco</span>
+                            </div>
+                            <div id="fila-disco" className="box-fila">
+                                <div style={{backgroundColor: "#8c14fc"}} className="topo">{filaDisco[0]!=null?filaDisco[0]:""}</div>
+                                <div className="fila">
+                                    {
+                                        filaDisco.slice(1, filaDisco.length).map((item, i) => (
+                                            <div className="item">
+                                                <div style={{backgroundColor: "#f4b350"}} className="processo">{item}</div>
+                                                <div className="indice">{i+1}</div>
+                                            </div>
+                                        ))
+                                    }
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 
@@ -455,17 +553,7 @@ class Execucao extends Component {
                                     ))
                                 }
                             </div>
-                            {/* {
-                                this.state.estruturas.memoriaVirtual.map((r, i) => (
-                                    <div key={i} className="celula-virtual">
-                                        <div className="id">{i}</div>
-                                        <div className="referencia">
-                                            {r}
-                                        </div>
-                                        <div className="processo">P{Math.floor(i/this.props.dadosEntrada.qtdPaginas)+1}</div>
-                                    </div>
-                                ))
-                            } */}
+                            
                         </div>
                         <div>
                             <div id="range-virtual" className="ui range"></div>
@@ -475,11 +563,21 @@ class Execucao extends Component {
                         <h3>RAM</h3>
                         <div className="box-memoria">
                             {
-                                this.state.estruturas.memoriaReal.memoria.map((val, i) => (
-                                    <div key={i} className="celula-memoria">
-                                        {val}
-                                    </div>
-                                ))
+                                this.state.estruturas.memoriaReal.memoria.map((val, i) => {
+                                    let st = {}
+                                    if (this.state.estruturas.memoriaReal.ultimasModificacoes.indexOf(i) != -1) {
+                                        st = {
+                                            backgroundColor: "#333",
+                                            color: "white"
+                                        }
+                                    } 
+
+                                    return (
+                                        <div key={i} style={st} className="celula-memoria">
+                                            {val}
+                                        </div>
+                                    )
+                                })
                             }
                         </div>
                     </div>

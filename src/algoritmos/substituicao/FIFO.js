@@ -2,6 +2,7 @@ class MemFIFO {
     constructor() {
         this.indiceAtual = 0;
         this.memoria = Array(50).fill(null);
+        this.ultimasModificacoes = [];
     }
 
     proximoIndice() { 
@@ -38,6 +39,7 @@ class MemFIFO {
 
             this.memoria[ind] = j;
             memVirtual[j] = ind;
+            this.ultimasModificacoes.push(ind);
 
             this.proximoIndice();
             

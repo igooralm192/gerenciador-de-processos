@@ -15,6 +15,7 @@ class MemMRU {
 
     atualizaReferencia(processo) {
         let ref = null;
+
         for (let i in this.referencias) {
             if (this.referencias[i].id == processo.id) {
                 ref = this.referencias[i];
@@ -22,6 +23,14 @@ class MemMRU {
                 break;
             }
         }
+
+        if (ref == null) {
+            ref = {
+                id: processo.id,
+                paginas: []
+            }
+        }
+
         this.referencias.push(ref);
     }
 
@@ -30,7 +39,6 @@ class MemMRU {
         let paginas = [];
 
         for (let j=ini; j<ini+qtdPaginas; j++) {
-            let ok = true;
             let ind = this.indiceAtual;
 
             if (memVirtual[j] != null) continue;
@@ -60,19 +68,13 @@ class MemMRU {
             }
         }
 
+        
         for (let i in this.referencias) {
             if (this.referencias[i].id == processo.id) {
-                this.referencias.splice(i, 1);
+                this.referencias[i].paginas = paginas.concat(this.referencias[i].paginas);
                 break;
             }
         }
-
-        this.referencias.push({
-            id: processo.id,
-            paginas
-        });
-
-        console.log('referencias', this.referencias)
     }
 }
 

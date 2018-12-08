@@ -60,9 +60,10 @@ class FIFO {
         while (processoAtual == null && this.filaProntos.length != 0) {
             let topo = this.filaProntos.dequeue();  
 
+            memReal.atualizaReferencia(topo);
+
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
-
                     memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                     topo.estado = "Espera - FP";
@@ -81,7 +82,7 @@ class FIFO {
                 }
             } else {
                 topo.estado = "Execução"
-                memReal.atualizaReferencia(topo);
+
                 if (topo.tempoExecucao == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
@@ -94,12 +95,14 @@ class FIFO {
             }
             
         }
+
+        console.log('referencias', memReal.referencias);
         
         for (const i in this.processos) {
             estados.push( this.processos[i].estado )
         }
 
-        return [estados, processoAtual]
+        return [estados, processoAtual, this.filaProntos, this.filaDisco]
     }
 
     limpar() {
