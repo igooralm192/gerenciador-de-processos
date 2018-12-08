@@ -40,19 +40,32 @@ class ROBIN {
         }*/
 
         if (processoAtual != null) {
+            //alert('tempo execucao'+processoAtual.tempoExecucao)
+            //alert('tempo decorrido'+processoAtual.tempoDecorrido)
             if (processoAtual.estado == "Execução") {
-                if ((processoAtual.tempoDecorrido == 2 /*quantum*/) && (processoAtual.tempoExecucao > 0)) {
+                if ((processoAtual.tempoDecorrido == 2 /*quantum*/) && (processoAtual.tempoExecucao > 1)) {
+                    //alert('aviso 47')
                     processoAtual.estado = "Sobrecarga";
                     processoAtual.tempoDecorrido = 1;
-                    this.filaProntos.push(processoAtual);
-                    processoAtual = null;
-                } else if ((processoAtual.tempoDecorrido < 2 /*quantum*/) && (processoAtual.tempoExecucao > 0)) {
+                    processoAtual.tempoExecucao--;
+                    /*this.filaProntos.push(processoAtual);
+                    processoAtual = null;*/
+                } else if ((processoAtual.tempoDecorrido < 2 /*quantum*/) && (processoAtual.tempoExecucao > 1)) {
+                    //alert('aviso 52')
                     processoAtual.tempoDecorrido++;
                     processoAtual.tempoExecucao--;
-                }else if (processoAtual.tempoExecucao == 0){
+                }else if (processoAtual.tempoExecucao == 1){
+                    //alert('aviso ')
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
                 }
+            }else if(processoAtual.estado == "Sobrecarga"){
+                if(processoAtual.tempoDecorrido == 1 /*sobrecarga*/){
+                    processoAtual.estado = "Espera - FP";
+                    processoAtual.tempoDecorrido = 1;
+                    this.filaProntos.push(processoAtual);
+                    processoAtual = null;
+                }else processoAtual.tempoDecorrido++;
             }
         }
 
