@@ -354,20 +354,25 @@ class Execucao extends Component {
         })
     }
 
-    scrollDown() {
-        $("#box-ids").scrollTop($("#box-execucao").scrollTop()) 
+    scrollDown(set, get) {
+        $(set).scrollTop($(get).scrollTop()) 
     }
 
     render() {
         let qtdPaginas = this.props.dadosEntrada.qtdPaginas;
-        let pagsVirtuais = Array(this.props.processos.length).fill(null);
         let memVirtual = this.state.estruturas.memoriaVirtual;
+        let pagsVirtuais = [];
         
-        for (let i in pagsVirtuais) {
-            let ini = i*qtdPaginas;
-            if (qtdPaginas == 0) pagsVirtuais[i] = Array(qtdPaginas).fill(null);
-            else pagsVirtuais[i] = memVirtual.slice(ini, ini+qtdPaginas);
+        for (let i=0; i<qtdPaginas; i++) {
+            let colPag = [];
+            for (let j=0; j<this.props.processos.length; j++) {
+                let pag = memVirtual[i+j*qtdPaginas];
+                colPag.push(pag);
+            }
+            pagsVirtuais.push(colPag);
         }
+
+        // 0 1 2 3 4 5 6 7 8 9 10 11
         
         let filaProntos = [];
         if (this.state.filaProntos != null) {
@@ -450,7 +455,7 @@ class Execucao extends Component {
                                         ))
                                     }
                                 </div>
-                                <div id="box-execucao" onScroll={() => this.scrollDown()}>
+                                <div id="box-execucao" onScroll={() => this.scrollDown("#box-ids", "#box-execucao")}>
                                     {
                                         this.state.colunas.map(col => (
                                             col
@@ -474,6 +479,7 @@ class Execucao extends Component {
                         <button className="ui icon button" onClick={() => this.parar()}>
                             <i className="stop icon"/>
                         </button>
+                        
                     </div>
                     
                     <div className="column">
@@ -537,21 +543,21 @@ class Execucao extends Component {
                         <div id="box-memoria-virtual">
                             <div className="ids">
                                 {
-                                    pagsVirtuais.map((p, i) => (
+                                    this.props.processos.map((p, i) => (
                                         <div key={i} className="id">P{i+1}</div>
                                     ))
                                 }
                             </div>
                                 
-                            <div className="paginas">
+                            <div className="paginas" onScroll={() => this.scrollDown("#box-memoria-virtual .ids", "#box-memoria-virtual .paginas")}>
                                 {
-                                    pagsVirtuais.map((pagina, i) => (
-                                        <div key={i} className="pags-processo">
+                                    pagsVirtuais.map((coluna, i) => (
+                                        <div key={i} className="coluna-pags">
                                             {
-                                                pagina != null && pagina.map((v, j) => (
+                                                coluna != null && coluna.map((v, j) => (
                                                     <div className="pagina">
                                                         <div className="referencia">{v}</div>
-                                                        <div className="id">{i*this.props.dadosEntrada.qtdPaginas+j}</div>
+                                                        <div className="id">{i+this.props.dadosEntrada.qtdPaginas*j}</div>
                                                     </div>
                                                 ))
                                             }

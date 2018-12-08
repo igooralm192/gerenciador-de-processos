@@ -106,7 +106,7 @@ class SJF {
             estados.push( this.processos[i].estado )
         }
 
-        return [estados, processoAtual]
+        return [estados, processoAtual, this.filaProntos, this.filaDisco]
     }
 
     limpar() {

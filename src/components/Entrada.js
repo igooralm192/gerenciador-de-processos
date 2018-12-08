@@ -166,6 +166,16 @@ class Entrada extends Component {
         let ind = idProcessos.indexOf(i);
         processos.splice(ind, 1)
         idProcessos.splice(ind, 1);
+
+        $("#processos").css({
+            width: "-=214px"
+        })
+
+        for (let i in processos) {
+            processos[i].id = parseInt(i)+1;
+            idProcessos[i] = parseInt(i)+1;
+        }
+
         
         this.setState({idProcessos, processos})
     }
@@ -202,8 +212,8 @@ class Entrada extends Component {
                                         <select className="ui fluid dropdown" onChange={(e) => this.handleEscalonamento(e)}>
                                             <option value="FIFO">FIFO</option>
                                             <option value="SJF">SJF</option>
-                                            <option value="EDF">EDF</option>
                                             <option value="RR">RR</option>
+                                            <option value="EDF">EDF</option>
                                         </select>
                                     </div>
                                     <div className="field">

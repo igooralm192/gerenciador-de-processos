@@ -77,7 +77,8 @@ class ROBIN {
         while (processoAtual == null && this.filaProntos.fila.length != 0) {
             const topo = this.filaProntos.topo(); 
             this.filaProntos.pop();
-
+            
+            memReal.atualizaReferencia(topo);
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
                     memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
@@ -111,7 +112,7 @@ class ROBIN {
             }
             
         }
-        
+        console.log('referencias', memReal.referencias);
         for (const i in this.processos) {
             estados.push( this.processos[i].estado )
         }
