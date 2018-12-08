@@ -47,7 +47,11 @@ class MemMRU {
             if (this.memoria[ind] != null) {
                 let i = 0;
                 
-                while ((atual != null && this.referencias[i].id == atual.id) || this.referencias[i].id == processo.id) i++;
+                while (i<this.referencias.length && ((atual != null && this.referencias[i].id == atual.id) || this.referencias[i].id == processo.id)) i++;
+                if (i == this.referencias.length) {
+                    break;
+                }
+                
                 let menorRef = this.referencias[i];
 
                 var pagina = menorRef.paginas.shift();
