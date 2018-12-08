@@ -109,6 +109,9 @@ class Entrada extends Component {
         val = parseInt(val)
 
         if (!isNaN(val)) {
+            if(op[input-1] == "tempoExecucao"){
+                processos[id-1][ "tempoExecucaoAux" ] = val;
+            }
             processos[id-1][ op[input-1] ] = val;
             this.setState({processos})
         }

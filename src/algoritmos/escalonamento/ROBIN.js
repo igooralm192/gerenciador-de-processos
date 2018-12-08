@@ -32,14 +32,14 @@ class ROBIN {
 
         if (processoAtual != null) {
             if (processoAtual.estado == "Execução") {
-                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucao > 0)) {
+                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
                     processoAtual.estado = "Sobrecarga";
                     processoAtual.tempoDecorrido = 1;
 
-                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucao > 0)) {
+                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
                     processoAtual.tempoDecorrido++;
-                    processoAtual.tempoExecucao--;
-                }else if (processoAtual.tempoExecucao == 0){
+                    processoAtual.tempoExecucaoAux--;
+                }else if (processoAtual.tempoExecucaoAux == 0){
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
                 }
@@ -98,12 +98,12 @@ class ROBIN {
                 }
             } else {
                 topo.estado = "Execução"
-                if (topo.tempoExecucao == 0) {
+                if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
                 } else {
                     topo.tempoDecorrido = 1;
-                    topo.tempoExecucao--;
+                    topo.tempoExecucaoAux--;
                     processoAtual = topo;
                     break;
                 }
