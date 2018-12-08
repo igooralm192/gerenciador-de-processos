@@ -30,12 +30,29 @@ class ROBIN {
             }
         }
 
-        if (processoAtual != null) {
+        /*if (processoAtual != null) {
             if (processoAtual.estado == "Execução") {
                 if (processoAtual.tempoDecorrido == processoAtual.tempoExecucao) {
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
                 } else processoAtual.tempoDecorrido++;
+            }
+        }*/
+
+        if (processoAtual != null) {
+            if (processoAtual.estado == "Execução") {
+                if ((processoAtual.tempoDecorrido == 2 /*quantum*/) && (processoAtual.tempoExecucao > 0)) {
+                    processoAtual.estado = "Sobrecarga";
+                    processoAtual.tempoDecorrido = 1;
+                    this.filaProntos.push(processoAtual);
+                    processoAtual = null;
+                } else if ((processoAtual.tempoDecorrido < 2 /*quantum*/) && (processoAtual.tempoExecucao > 0)) {
+                    processoAtual.tempoDecorrido++;
+                    processoAtual.tempoExecucao--;
+                }else if (processoAtual.tempoExecucao == 0){
+                    processoAtual.estado = "Acabou"
+                    processoAtual = null;
+                }
             }
         }
 
