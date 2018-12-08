@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FIFO } from '../algoritmos/escalonamento/FIFO'
 import { SJF } from '../algoritmos/escalonamento/SJF'
 import { ROBIN } from '../algoritmos/escalonamento/ROBIN'
+import { EDF } from '../algoritmos/escalonamento/EDF'
 
 import { MemFIFO } from '../algoritmos/substituicao/FIFO'
 import { MemMRU } from '../algoritmos/substituicao/MRU';
@@ -23,6 +24,9 @@ class Execucao extends Component {
                 },
                 "RR": function(processos, dados) {
                     return new ROBIN(processos, dados);
+                },
+                "EDF": function(processos, dados) {
+                    return new EDF(processos, dados);
                 }
             },
             substituicao: {
