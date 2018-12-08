@@ -230,10 +230,10 @@ div[data-tab="Entrada"] {
 	width: 100%;
 	display: flex;
 	height: 200px;
-	overflow-y: scroll;
 }
 
 #box-memoria-virtual .ids {
+	overflow: hidden;
 	padding-right: 10px;
 }
 
@@ -244,18 +244,20 @@ div[data-tab="Entrada"] {
 
 #box-memoria-virtual .paginas {
 	flex: 1;
+	display: -webkit-box;
 	width: 300px;
 	height: 100%;
 	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
-#box-memoria-virtual .paginas .pags-processo {
-	width: auto;
-	display: -webkit-box;
-}
-
-#box-memoria-virtual .paginas .pags-processo .pagina {
+#box-memoria-virtual .paginas .coluna-pags {
 	width: 30px;
+	height: 100%;
+}
+
+#box-memoria-virtual .paginas .coluna-pags .pagina {
+	height: 40px;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
@@ -263,7 +265,7 @@ div[data-tab="Entrada"] {
 	text-align: center;
 }
 
-#box-memoria-virtual .paginas .pags-processo .pagina .referencia {
+#box-memoria-virtual .paginas .coluna-pags .pagina .referencia {
 	width: 20px;
 	height: 20px;
 	font-size: 0.9em;
@@ -271,7 +273,7 @@ div[data-tab="Entrada"] {
 	background-color: #ddd;
 }
 
-#box-memoria-virtual .paginas .pags-processo .pagina .id {
+#box-memoria-virtual .paginas .coluna-pags .pagina .id {
 	width: 100%;
 	font-size: 0.7em;
 	

@@ -6,6 +6,7 @@ class MemMRU {
         this.indiceAtual = 0;
         this.referencias = [];
         this.memoria = Array(50).fill(null);
+        this.ultimasModificacoes = [];
     }
 
     proximoIndice() { 
@@ -55,6 +56,7 @@ class MemMRU {
                 this.memoria[pagina.referencia] = j;
                 memVirtual[j] = pagina.referencia;
                 paginas.push({id: j, referencia: pagina.referencia});
+                this.ultimasModificacoes.push(pagina.referencia)
 
                 if (menorRef.paginas.length == 0) this.referencias.splice(i, 1);
                 
@@ -63,6 +65,7 @@ class MemMRU {
                 this.memoria[ind] = j;
                 memVirtual[j] = ind;
                 paginas.push({id: j, referencia: ind});
+                this.ultimasModificacoes.push(ind)
 
                 this.proximoIndice();
             }
@@ -75,6 +78,8 @@ class MemMRU {
                 break;
             }
         }
+
+        console.log('referencias',this.referencias)
     }
 }
 
