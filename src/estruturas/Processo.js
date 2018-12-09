@@ -5,6 +5,7 @@ class Processo {
         this.tempoExecucao = te;
         this.tempoExecucaoAux = te;
         this.deadline = d;
+        this.deadlineAux = d;
         this.prioridade = p;
         this.tempoDecorrido = 1;
         this.estado = "Nada";

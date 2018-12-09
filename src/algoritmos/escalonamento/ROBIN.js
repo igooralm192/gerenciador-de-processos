@@ -30,6 +30,27 @@ class ROBIN {
             }
         }
 
+        if (!this.filaDisco.vazio()) {
+            let topo = this.filaDisco.topo();
+
+            if (topo.tempoDecorrido == this.tempoDisco) {
+                this.filaDisco.pop();
+
+                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+
+                topo.estado = "Espera - FP";
+                topo.tempoDecorrido = 1;
+                this.filaProntos.push(topo);
+
+                if (!this.filaDisco.vazio()) {
+                    let topo = this.filaDisco.topo();
+
+                    topo.estado = "Disco";
+                    topo.tempoDecorrido = 1;
+                }
+            } else topo.tempoDecorrido++;
+        }
+
         if (processoAtual != null) {
             if (processoAtual.estado == "Execução") {
                 if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
@@ -51,27 +72,6 @@ class ROBIN {
                     processoAtual = null;
                 }else processoAtual.tempoDecorrido++;
             }
-        }
-
-        if (!this.filaDisco.vazio()) {
-            let topo = this.filaDisco.topo();
-
-            if (topo.tempoDecorrido == this.tempoDisco) {
-                this.filaDisco.pop();
-
-                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
-
-                topo.estado = "Espera - FP";
-                topo.tempoDecorrido = 1;
-                this.filaProntos.push(topo);
-
-                if (!this.filaDisco.vazio()) {
-                    let topo = this.filaDisco.topo();
-
-                    topo.estado = "Disco";
-                    topo.tempoDecorrido = 1;
-                }
-            } else topo.tempoDecorrido++;
         }
 
         while (processoAtual == null && this.filaProntos.fila.length != 0) {

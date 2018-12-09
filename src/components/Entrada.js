@@ -112,6 +112,9 @@ class Entrada extends Component {
             if(op[input-1] == "tempoExecucao"){
                 processos[id-1][ "tempoExecucaoAux" ] = val;
             }
+            if(op[input-1] == "deadline"){
+                processos[id-1][ "deadlineAux" ] = val;
+            }
             processos[id-1][ op[input-1] ] = val;
             this.setState({processos})
         }
