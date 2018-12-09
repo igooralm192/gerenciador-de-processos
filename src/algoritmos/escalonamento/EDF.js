@@ -20,10 +20,6 @@ class EDF {
         this.filaDisco = new Fila();
     }
 
-    contarTempo(){
-
-    }
-
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
         let terminou = true;
         let estados = [];
@@ -33,36 +29,21 @@ class EDF {
 
                 this.processos[i].estado = "Espera - FP";
                 this.processos[i].tempoDecorrido = 1;
+                this.processos[i].deadlineAux = this.processos[i].deadline + this.processos[i].tempoChegada;
                 this.filaProntos.queue(this.processos[i])
             }
         }
 
-        /*if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
-                if (processoAtual.tempoDecorrido == processoAtual.tempoExecucaoAux) {
-                    processoAtual.estado = "Acabou"
-                    processoAtual = null;
-                } else processoAtual.tempoDecorrido++;
-            }
-        }*/
-
         if (processoAtual != null) {
-            /*alert('tempo execucao '+processoAtual.tempoExecucaoAux)
-            alert('tempo decorrido '+processoAtual.tempoDecorrido)
-            alert('quantum '+this.quantum)*/
             if (processoAtual.estado == "Execução") {
-                //alert('execucao')
                 if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
-                    //alert('sobrecarga')
                     processoAtual.estado = "Sobrecarga";
                     processoAtual.tempoDecorrido = 1;
 
                 } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
-                    //alert('modificar')
                     processoAtual.tempoDecorrido++;
                     processoAtual.tempoExecucaoAux--;
                 }else if (processoAtual.tempoExecucaoAux == 0){
-                    //alert('finalizar')
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
                 }
@@ -70,7 +51,6 @@ class EDF {
                 if(processoAtual.tempoDecorrido == this.sobrecarga){
                     processoAtual.estado = "Espera - FP";
                     processoAtual.tempoDecorrido = 1;
-                    //this.filaProntos.push(processoAtual);
                     this.filaProntos.queue(processoAtual);
                     processoAtual = null;
                 }else processoAtual.tempoDecorrido++;

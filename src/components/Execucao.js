@@ -317,7 +317,7 @@ class Execucao extends Component {
             processos[i].tempoDecorrido = 1;
             processos[i].estado = "Nada";
             processos[i].tempoExecucaoAux = processos[i].tempoExecucao;
-            processos[i].deadlineAux = processos[i].deadline;
+            processos[i].deadlineAux = processos[i].deadline + processos[i].tempoChegada;
         }
 
         estruturas.execucao = algoritmos.escalonamento[escalonamento](processos, this.props.dadosEntrada);
