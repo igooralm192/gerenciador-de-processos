@@ -6,12 +6,7 @@ class FIFO {
         this.processos = processos;
         this.qtdPaginas = dados.qtdPaginas;
         this.tempoDisco = dados.tempoDisco;
-        this.filaProntos = new PriorityQueue({
-            comparator: (a, b) => {
-                if (a.tempoChegada == b.tempoChegada) return a.id - b.id;
-                return a.tempoChegada - b.tempoChegada;
-            }
-        });
+        this.filaProntos = new Fila();
         this.filaDisco = new Fila();
     }
 
@@ -23,7 +18,7 @@ class FIFO {
 
                 this.processos[i].estado = "Espera - FP";
                 this.processos[i].tempoDecorrido = 1;
-                this.filaProntos.queue(this.processos[i])
+                this.filaProntos.push(this.processos[i])
             }
         }
 
@@ -46,7 +41,7 @@ class FIFO {
 
                 topo.estado = "Espera - FP";
                 topo.tempoDecorrido = 1;
-                this.filaProntos.queue(topo);
+                this.filaProntos.push(topo);
 
                 if (!this.filaDisco.vazio()) {
                     let topo = this.filaDisco.topo();
@@ -57,8 +52,9 @@ class FIFO {
             } else topo.tempoDecorrido++;
         }
 
-        while (processoAtual == null && this.filaProntos.length != 0) {
-            let topo = this.filaProntos.dequeue();  
+        while (processoAtual == null && this.filaProntos.fila.length != 0) {
+            let topo = this.filaProntos.topo();  
+            this.filaProntos.pop();
 
             memReal.atualizaReferencia(topo);
 
@@ -68,7 +64,7 @@ class FIFO {
 
                     topo.estado = "Espera - FP";
                     topo.tempoDecorrido = 1;
-                    this.filaProntos.queue(topo);
+                    this.filaProntos.push(topo);
 
                 } else {
                     topo.tempoDecorrido = 1;
