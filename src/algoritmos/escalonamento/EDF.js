@@ -10,14 +10,18 @@ class EDF {
         this.tempoDisco = dados.tempoDisco;
         this.filaProntos = new PriorityQueue({
             comparator: (a, b) => {
-                if (a.deadline == b.deadline) {
+                if (a.deadlineAux == b.deadlineAux) {
                     if (a.tempoChegada == b.tempoChegada) return a.id - b.id;
                     return a.tempoChegada - b.tempoChegada
                 }
-                return a.deadline - b.deadline;
+                return a.deadlineAux - b.deadlineAux;
             }
         });
         this.filaDisco = new Fila();
+    }
+
+    contarTempo(){
+
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
