@@ -29,6 +29,7 @@ class Gerenciador extends Component {
         })
     }
 
+
     render() {
         return (
             <div id="gerenciador">

@@ -315,6 +315,7 @@ class Execucao extends Component {
         
         for (let i in processos) {
             processos[i].tempoDecorrido = 1;
+            processos[i].tempoExecucaoAux = processos[i].tempoExecucao;
             processos[i].estado = "Nada";
             processos[i].tempoExecucaoAux = processos[i].tempoExecucao;
             processos[i].deadlineAux = processos[i].deadline + processos[i].tempoChegada;
