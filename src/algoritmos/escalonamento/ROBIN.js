@@ -30,29 +30,6 @@ class ROBIN {
             }
         }
 
-        if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
-                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucao > 0)) {
-                    processoAtual.estado = "Sobrecarga";
-                    processoAtual.tempoDecorrido = 1;
-
-                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucao > 0)) {
-                    processoAtual.tempoDecorrido++;
-                    processoAtual.tempoExecucao--;
-                }else if (processoAtual.tempoExecucao == 0){
-                    processoAtual.estado = "Acabou"
-                    processoAtual = null;
-                }
-            } else if(processoAtual.estado == "Sobrecarga"){
-                if(processoAtual.tempoDecorrido == this.sobrecarga){
-                    processoAtual.estado = "Espera - FP";
-                    processoAtual.tempoDecorrido = 1;
-                    this.filaProntos.push(processoAtual);
-                    processoAtual = null;
-                }else processoAtual.tempoDecorrido++;
-            }
-        }
-
         if (!this.filaDisco.vazio()) {
             let topo = this.filaDisco.topo();
 
@@ -72,6 +49,29 @@ class ROBIN {
                     topo.tempoDecorrido = 1;
                 }
             } else topo.tempoDecorrido++;
+        }
+
+        if (processoAtual != null) {
+            if (processoAtual.estado == "Execução") {
+                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
+                    processoAtual.estado = "Sobrecarga";
+                    processoAtual.tempoDecorrido = 1;
+
+                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
+                    processoAtual.tempoDecorrido++;
+                    processoAtual.tempoExecucaoAux--;
+                }else if (processoAtual.tempoExecucaoAux == 0){
+                    processoAtual.estado = "Acabou"
+                    processoAtual = null;
+                }
+            } else if(processoAtual.estado == "Sobrecarga"){
+                if(processoAtual.tempoDecorrido == this.sobrecarga){
+                    processoAtual.estado = "Espera - FP";
+                    processoAtual.tempoDecorrido = 1;
+                    this.filaProntos.push(processoAtual);
+                    processoAtual = null;
+                }else processoAtual.tempoDecorrido++;
+            }
         }
 
         while (processoAtual == null && this.filaProntos.fila.length != 0) {
@@ -99,12 +99,12 @@ class ROBIN {
                 }
             } else {
                 topo.estado = "Execução"
-                if (topo.tempoExecucao == 0) {
+                if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
                 } else {
                     topo.tempoDecorrido = 1;
-                    topo.tempoExecucao--;
+                    topo.tempoExecucaoAux--;
                     processoAtual = topo;
                     break;
                 }

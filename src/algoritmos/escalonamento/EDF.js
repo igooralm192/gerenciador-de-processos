@@ -1,25 +1,26 @@
 import PriorityQueue from 'js-priority-queue'
 import { Fila } from '../../estruturas/Fila';
 
-class SJF {
+class EDF {
     constructor(processos, dados) {
         this.processos = processos;
+        this.sobrecarga = dados.sobrecarga;
+        this.quantum = dados.quantum;
         this.qtdPaginas = dados.qtdPaginas;
         this.tempoDisco = dados.tempoDisco;
         this.filaProntos = new PriorityQueue({
             comparator: (a, b) => {
-                if (a.tempoExecucao == b.tempoExecucao) {
+                if (a.deadlineAux == b.deadlineAux) {
                     if (a.tempoChegada == b.tempoChegada) return a.id - b.id;
                     return a.tempoChegada - b.tempoChegada
                 }
-                return a.tempoExecucao - b.tempoExecucao;
+                return a.deadlineAux - b.deadlineAux;
             }
         });
         this.filaDisco = new Fila();
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
-        let terminou = true;
         let estados = [];
         
         for (const i in this.processos) {
@@ -27,6 +28,7 @@ class SJF {
 
                 this.processos[i].estado = "Espera - FP";
                 this.processos[i].tempoDecorrido = 1;
+                this.processos[i].deadlineAux = this.processos[i].deadline + this.processos[i].tempoChegada;
                 this.filaProntos.queue(this.processos[i])
             }
         }
@@ -53,17 +55,35 @@ class SJF {
         }
 
         if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
-                if (processoAtual.tempoDecorrido == processoAtual.tempoExecucao) {
+            if (processoAtual.estado == "Execução" || processoAtual.estado == "Deadline") {
+                if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
+                    processoAtual.estado = "Sobrecarga";
+                    processoAtual.tempoDecorrido = 1;
+
+                } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
+                    processoAtual.tempoDecorrido++;
+                    processoAtual.tempoExecucaoAux--;
+                    if(processoAtual.deadlineAux < tempo){
+                        processoAtual.estado = "Deadline";
+                    }
+                }else if (processoAtual.tempoExecucaoAux == 0){
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
-                } else processoAtual.tempoDecorrido++;
+                }
+            } else if(processoAtual.estado == "Sobrecarga"){
+                if(processoAtual.tempoDecorrido == this.sobrecarga){
+                    processoAtual.estado = "Espera - FP";
+                    processoAtual.tempoDecorrido = 1;
+                    this.filaProntos.queue(processoAtual);
+                    processoAtual = null;
+                }else processoAtual.tempoDecorrido++;
             }
         }
 
         while (processoAtual == null && this.filaProntos.length != 0) {
             let topo = this.filaProntos.dequeue();  
 
+            memReal.atualizaReferencia(topo);
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
 
@@ -74,26 +94,25 @@ class SJF {
                     this.filaProntos.queue(topo);
 
                 } else {
-                    console.log('oiii')
                     topo.tempoDecorrido = 1;
                     if (this.filaDisco.vazio()) {
-                        console.log('vazioo')
                         topo.estado = "Disco";
                         this.filaDisco.push(topo);
                     } else {
-                        console.log('nao vazioo')
                         topo.estado = "Espera - D";
                         this.filaDisco.push(topo);
                     }
                 }
             } else {
-                topo.estado = "Execução";
-                memReal.atualizaReferencia(topo);
-                if (topo.tempoExecucao == 0) {
+                if(topo.deadlineAux < tempo) topo.estado = "Deadline";
+                else topo.estado = "Execução";
+                
+                if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
                 } else {
                     topo.tempoDecorrido = 1;
+                    topo.tempoExecucaoAux--;
                     processoAtual = topo;
                     break;
                 }
@@ -116,4 +135,4 @@ class SJF {
 }
 
 
-export { SJF }
+export { EDF }

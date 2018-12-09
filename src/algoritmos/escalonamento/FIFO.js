@@ -22,15 +22,6 @@ class FIFO {
             }
         }
 
-        if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
-                if (processoAtual.tempoDecorrido == processoAtual.tempoExecucao) {
-                    processoAtual.estado = "Acabou"
-                    processoAtual = null;
-                } else processoAtual.tempoDecorrido++;
-            }
-        }
-
         if (!this.filaDisco.vazio()) {
             let topo = this.filaDisco.topo();
 
@@ -50,6 +41,15 @@ class FIFO {
                     topo.tempoDecorrido = 1;
                 }
             } else topo.tempoDecorrido++;
+        }
+
+        if (processoAtual != null) {
+            if (processoAtual.estado == "Execução") {
+                if (processoAtual.tempoDecorrido == processoAtual.tempoExecucao) {
+                    processoAtual.estado = "Acabou"
+                    processoAtual = null;
+                } else processoAtual.tempoDecorrido++;
+            }
         }
 
         while (processoAtual == null && this.filaProntos.fila.length != 0) {
