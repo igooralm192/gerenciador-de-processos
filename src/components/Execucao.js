@@ -74,6 +74,7 @@ class Execucao extends Component {
             filaDisco: null,
             estados: [],
             terminou: false,
+            turnaround: 0,
         }
 
         this.redimensionar = this.redimensionar.bind(this);
@@ -218,9 +219,6 @@ class Execucao extends Component {
             memoriaReal
         );
 
-        console.log(memoriaVirtual, memoriaReal.memoria)
-        console.log(tempo, proxEstado, processoAtual)
-
         let terminou = true;
         for (let i in proxEstado) {
             if (proxEstado[i] != "Acabou") {
@@ -303,11 +301,11 @@ class Execucao extends Component {
             total += soma/this.props.processos.length;
         }
         
-        alert('Turnaround Médio: '+total)
+        alert('Turn Around Médio: '+total)
 
         clearInterval(this.state.intervalo);
 
-        this.setState({iniciado: false, terminou: true});
+        this.setState({iniciado: false, terminou: true, turnaround: total});
     }
 
     parar() {
@@ -339,6 +337,7 @@ class Execucao extends Component {
             estruturas,
             iniciado: false,
             terminou: false,
+            turnaround: 0,
             estados: [],
             processoAtual: null,
             filaProntos: null,
@@ -605,6 +604,11 @@ class Execucao extends Component {
                                 })
                             }
                         </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="column">
+                        <h2>Turn Around Médio: {this.state.turnaround}</h2>
                     </div>
                 </div>
             </div>
