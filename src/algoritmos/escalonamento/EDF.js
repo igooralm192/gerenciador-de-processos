@@ -35,7 +35,7 @@ class EDF {
         }
 
         if (processoAtual != null) {
-            if (processoAtual.estado == "Execução") {
+            if (processoAtual.estado == "Execução" || processoAtual.estado == "Deadline") {
                 if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
                     processoAtual.estado = "Sobrecarga";
                     processoAtual.tempoDecorrido = 1;
@@ -43,6 +43,9 @@ class EDF {
                 } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
                     processoAtual.tempoDecorrido++;
                     processoAtual.tempoExecucaoAux--;
+                    if(processoAtual.deadlineAux < tempo){
+                        processoAtual.estado = "Deadline";
+                    }
                 }else if (processoAtual.tempoExecucaoAux == 0){
                     processoAtual.estado = "Acabou"
                     processoAtual = null;
@@ -105,7 +108,9 @@ class EDF {
                     }
                 }
             } else {
-                topo.estado = "Execução";
+                if(topo.deadlineAux < tempo){
+                    topo.estado = "Deadline";
+                } else topo.estado = "Execução";
                 if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
