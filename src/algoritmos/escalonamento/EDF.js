@@ -21,7 +21,6 @@ class EDF {
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
-        let terminou = true;
         let estados = [];
         
         for (const i in this.processos) {
@@ -32,6 +31,27 @@ class EDF {
                 this.processos[i].deadlineAux = this.processos[i].deadline + this.processos[i].tempoChegada;
                 this.filaProntos.queue(this.processos[i])
             }
+        }
+
+        if (!this.filaDisco.vazio()) {
+            let topo = this.filaDisco.topo();
+
+            if (topo.tempoDecorrido == this.tempoDisco) {
+                this.filaDisco.pop();
+
+                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+
+                topo.estado = "Espera - FP";
+                topo.tempoDecorrido = 1;
+                this.filaProntos.queue(topo);
+
+                if (!this.filaDisco.vazio()) {
+                    let topo = this.filaDisco.topo();
+
+                    topo.estado = "Disco";
+                    topo.tempoDecorrido = 1;
+                }
+            } else topo.tempoDecorrido++;
         }
 
         if (processoAtual != null) {
@@ -60,27 +80,6 @@ class EDF {
             }
         }
 
-        if (!this.filaDisco.vazio()) {
-            let topo = this.filaDisco.topo();
-
-            if (topo.tempoDecorrido == this.tempoDisco) {
-                this.filaDisco.pop();
-
-                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
-
-                topo.estado = "Espera - FP";
-                topo.tempoDecorrido = 1;
-                this.filaProntos.queue(topo);
-
-                if (!this.filaDisco.vazio()) {
-                    let topo = this.filaDisco.topo();
-
-                    topo.estado = "Disco";
-                    topo.tempoDecorrido = 1;
-                }
-            } else topo.tempoDecorrido++;
-        }
-
         while (processoAtual == null && this.filaProntos.length != 0) {
             let topo = this.filaProntos.dequeue();  
 
@@ -95,22 +94,19 @@ class EDF {
                     this.filaProntos.queue(topo);
 
                 } else {
-                    //console.log('oiii')
                     topo.tempoDecorrido = 1;
                     if (this.filaDisco.vazio()) {
-                        //console.log('vazioo')
                         topo.estado = "Disco";
                         this.filaDisco.push(topo);
                     } else {
-                        //console.log('nao vazioo')
                         topo.estado = "Espera - D";
                         this.filaDisco.push(topo);
                     }
                 }
             } else {
-                if(topo.deadlineAux < tempo){
-                    topo.estado = "Deadline";
-                } else topo.estado = "Execução";
+                if(topo.deadlineAux < tempo) topo.estado = "Deadline";
+                else topo.estado = "Execução";
+                
                 if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;

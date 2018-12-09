@@ -45,7 +45,7 @@ class Execucao extends Component {
             "Espera - FP": "#fef160",
             "Espera - D": "#f4b350",
             "Disco": "#8c14fc",
-            "Deadline": "#2e3131"
+            "Deadline": "#576574"
         }
 
         this.state = {
@@ -377,8 +377,6 @@ class Execucao extends Component {
             }
             pagsVirtuais.push(colPag);
         }
-
-        // 0 1 2 3 4 5 6 7 8 9 10 11
         
         let filaProntos = [];
         if (this.state.filaProntos != null) {
@@ -401,7 +399,6 @@ class Execucao extends Component {
             }
         }
         
-        console.log('state', this.state)
         return (
             <div className="ui grid">
                 <div className="row info">
@@ -434,7 +431,7 @@ class Execucao extends Component {
                                     <span className="descricao">Espera na fila do disco</span>
                                 </div>
                                 <div className="legenda inline field column">
-                                    <label style={{backgroundColor: "#2e3131"}} className="cor"></label>
+                                    <label style={{backgroundColor: "#576574"}} className="cor"></label>
                                     <span className="descricao">Deadline</span>
                                 </div>
                             </div>
@@ -484,6 +481,9 @@ class Execucao extends Component {
                         </button>
                         <button className="ui icon button" onClick={() => this.parar()}>
                             <i className="stop icon"/>
+                        </button>
+                        <button className="ui icon button" onClick={() => this.proximo()}>
+                            <i className="forward icon"/>
                         </button>
                         
                     </div>
