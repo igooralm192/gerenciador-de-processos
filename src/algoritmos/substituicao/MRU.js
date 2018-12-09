@@ -1,5 +1,3 @@
-import { Fila } from '../../estruturas/Fila'
-
 class MemMRU {
 
     constructor() {
@@ -47,7 +45,12 @@ class MemMRU {
             if (this.memoria[ind] != null) {
                 let i = 0;
                 
-                while (i<this.referencias.length && ((atual != null && this.referencias[i].id == atual.id) || this.referencias[i].id == processo.id || this.referencias[i].paginas.length == 0)) i++;
+                while (
+                    i<this.referencias.length && 
+                    ((atual != null && this.referencias[i].id == atual.id) || 
+                    this.referencias[i].id == processo.id || 
+                    this.referencias[i].paginas.length == 0)
+                    ) i++;
 
                 if (i == this.referencias.length) {
                     break;

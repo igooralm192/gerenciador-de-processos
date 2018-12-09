@@ -8,12 +8,6 @@ class ROBIN {
         this.qtdPaginas = dados.qtdPaginas;
         this.tempoDisco = dados.tempoDisco;
         this.filaProntos = new Fila();
-        /*this.filaProntos = new PriorityQueue({
-            comparator: (a, b) => {
-                if (a.tempoChegada == b.tempoChegada) return a.id - b.id;
-                return a.tempoChegada - b.tempoChegada;
-            }
-        });*/
         this.filaDisco = new Fila();
     }
 

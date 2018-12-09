@@ -120,6 +120,46 @@ class Entrada extends Component {
         }
     }
 
+    entradaCompleta() {
+        let val = $("#input-entrada-completa").val().split("\n");
+        let idProcessos = []
+        let processos = [];
+        
+        $("#processos").css({
+            width: "7px"
+        })
+
+        for (let i in val) {
+            i = parseInt(i);
+            let [ tc, te, d, p ] = val[i].split(' ');
+            let processo = new Processo(
+                i+1, 
+                isNaN(parseInt(tc))?0:parseInt(tc), 
+                isNaN(parseInt(te))?0:parseInt(te), 
+                isNaN(parseInt(d))?0:parseInt(d), 
+                isNaN(parseInt(p))?0:parseInt(p));
+            
+            idProcessos.push(i+1);
+            processos.push(processo);
+            $("#processos").css({
+                width: "+=214px"
+            })
+            
+            
+        }
+
+        while (processos.length < 2) {
+            idProcessos.push(processos.length+1);
+            processos.push(new Processo(processos.length+1, 0, 0, 0, 0))
+            $("#processos").css({
+                width: "+=214px"
+            })
+        }
+
+        $(".ui.modal").modal('hide')
+        this.setState({idProcessos, processos})
+    }
+
     menorValor() {
         let idProcessos = this.state.idProcessos;
         let menor = 1;
@@ -149,10 +189,14 @@ class Entrada extends Component {
         processos.sort((a, b) => {
             return a.id - b.id;
         })
-        console.log($("#processo1").innerWidth())
+
         $("#processos").css({
             width: "+=214px"
         })
+
+        console.log( )
+
+        $("#box-processos").scrollLeft( document.getElementById('box-processos').scrollWidth - document.getElementById('box-processos').clientWidth )
 
         this.setState({
             idProcessos,
@@ -217,6 +261,7 @@ class Entrada extends Component {
                                             <option value="SJF">SJF</option>
                                             <option value="RR">RR</option>
                                             <option value="EDF">EDF</option>
+                                            <option value="PS">PS</option>
                                         </select>
                                     </div>
                                     <div className="field">
@@ -232,7 +277,7 @@ class Entrada extends Component {
                                 
                             </div>
                             <button className="ui green button" onClick={() => this.adicionaProcesso()}>Adicionar Processo</button>
-                
+                            <button className="ui grey button" onClick={() => $('.ui.modal').modal('show')}>Entrada Completa</button>
                         </div>
 
                     </div>
@@ -243,6 +288,24 @@ class Entrada extends Component {
             
                 <div id="btn-executar">
                     <button className="ui fluid button" onClick={() => this.props.executar(this.state)}>Executar</button>
+                </div>
+
+                <div className="ui modal">
+                    <i className="close icon"></i>
+                    <div className="header">Entrada Completa</div>
+                    <div className="content">
+                        <h4>Formato:</h4> 
+                        <p>TempoChegada  TempoExecução  Deadline  Prioridade</p>
+                        <p>Ex: 0 6 15 1</p>
+                        <div className="ui form">
+                            <div className="field">
+                                <textarea id="input-entrada-completa"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="actions">
+                        <div className="ui green button" onClick={() => this.entradaCompleta()}>Enviar</div>
+                    </div>
                 </div>
             </div>
         );
