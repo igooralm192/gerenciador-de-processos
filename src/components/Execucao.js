@@ -383,14 +383,17 @@ class Execucao extends Component {
         }
         
         let filaProntos = [];
+        console.log(this.state.filaProntos);
         if (this.state.filaProntos != null) {
             if (this.state.filaProntos.fila != undefined) {
                 for (let i in this.state.filaProntos.fila) {
-                    filaProntos.push("P"+this.state.filaProntos.fila[i].id);
+                    if (this.state.filaProntos.fila[i].id == undefined) filaProntos.push("P"+this.state.filaProntos.fila[i].processo.id);
+                    else filaProntos.push("P"+this.state.filaProntos.fila[i].id);
                 }
             } else {
                 for (let i in this.state.filaProntos.priv.data) {
-                    filaProntos.push("P"+this.state.filaProntos.priv.data[i].id);
+                    if (this.state.filaProntos.priv.data[i].id == undefined) filaProntos.push("P"+this.state.filaProntos.priv.data[i].processo.id);
+                    else filaProntos.push("P"+this.state.filaProntos.priv.data[i].id);
                 }
             }
             

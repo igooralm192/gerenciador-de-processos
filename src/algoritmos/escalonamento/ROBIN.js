@@ -30,7 +30,18 @@ class ROBIN {
             if (topo.tempoDecorrido == this.tempoDisco) {
                 this.filaDisco.pop();
 
-                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                if (processoAtual != null) {
+                    if (processoAtual.estado == "Sobrecarga") {
+                        memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                    } else {
+                        if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) processoAtual.estado = "Sobrecarga";
+                        memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                        processoAtual.estado = "Execução";
+                    }
+                } else {
+                    memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                }
+                
 
                 topo.estado = "Espera - FP";
                 topo.tempoDecorrido = 1;
@@ -94,7 +105,7 @@ class ROBIN {
                 }
             } else {
                 topo.estado = "Execução";
-                
+
                 if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;

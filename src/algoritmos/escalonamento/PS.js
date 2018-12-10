@@ -1,4 +1,4 @@
-import PriorityQueue from 'js-priority-queue'
+import { PriorityQueue } from '../../estruturas/PriorityQueue'
 import { Fila } from '../../estruturas/Fila';
 
 class PS {
@@ -8,10 +8,14 @@ class PS {
         this.quantum = dados.quantum;
         this.qtdPaginas = dados.qtdPaginas;
         this.tempoDisco = dados.tempoDisco;
-        this.filaProntos = new PriorityQueue({
-            comparator: (a, b) => {
-                return b.prioridade - a.prioridade;
-            }
+        this.filaProntos = new PriorityQueue((a, b) => {
+            if (a.processo.prioridade == b.processo.prioridade) {
+                if (a.tempo == b.tempo) {
+                    if (a.processo.tempoExecucaoAux == b.processo.tempoExecucaoAux) return a.processo.id - b.processo.id;
+                    return b.processo.tempoExecucaoAux - a.processo.tempoExecucaoAux;
+                }
+                return a.tempo - b.tempo;
+            } else return b.processo.prioridade - a.processo.prioridade;
         });
         this.filaDisco = new Fila();
     }
@@ -24,7 +28,7 @@ class PS {
 
                 this.processos[i].estado = "Espera - FP";
                 this.processos[i].tempoDecorrido = 1;
-                this.filaProntos.queue(this.processos[i])
+                this.filaProntos.push({tempo: tempo, processo: this.processos[i]})
             }
         }
 
@@ -34,11 +38,21 @@ class PS {
             if (topo.tempoDecorrido == this.tempoDisco) {
                 this.filaDisco.pop();
 
-                memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                if (processoAtual != null) {
+                    if (processoAtual.estado == "Sobrecarga") {
+                        memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                    } else {
+                        if ((processoAtual.tempoDecorrido == this.quantum) && (processoAtual.tempoExecucaoAux > 0)) processoAtual.estado = "Sobrecarga";
+                        memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                        processoAtual.estado = "Execução";
+                    }
+                } else {
+                    memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
+                }
 
                 topo.estado = "Espera - FP";
                 topo.tempoDecorrido = 1;
-                this.filaProntos.queue(topo);
+                this.filaProntos.push({tempo: tempo, processo: topo});
 
                 if (!this.filaDisco.vazio()) {
                     let topo = this.filaDisco.topo();
@@ -67,14 +81,15 @@ class PS {
                 if(processoAtual.tempoDecorrido == this.sobrecarga){
                     processoAtual.estado = "Espera - FP";
                     processoAtual.tempoDecorrido = 1;
-                    this.filaProntos.queue(processoAtual);
+                    this.filaProntos.push({tempo: tempo, processo: processoAtual});
                     processoAtual = null;
                 }else processoAtual.tempoDecorrido++;
             }
         }
 
-        while (processoAtual == null && this.filaProntos.length != 0) {
-            let topo = this.filaProntos.dequeue();  
+        while (processoAtual == null && this.filaProntos.fila.length != 0) {
+            let topo = this.filaProntos.topo().processo;  
+            this.filaProntos.pop();
 
             memReal.atualizaReferencia(topo);
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
@@ -84,7 +99,7 @@ class PS {
 
                     topo.estado = "Espera - FP";
                     topo.tempoDecorrido = 1;
-                    this.filaProntos.queue(topo);
+                    this.filaProntos.push({tempo: tempo, processo: topo});
 
                 } else {
                     topo.tempoDecorrido = 1;
