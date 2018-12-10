@@ -73,6 +73,7 @@ class ROBIN {
             this.filaProntos.pop();
             
             memReal.atualizaReferencia(topo);
+
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
                     memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
@@ -92,7 +93,8 @@ class ROBIN {
                     }
                 }
             } else {
-                topo.estado = "Execução"
+                topo.estado = "Execução";
+                
                 if (topo.tempoExecucaoAux == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
@@ -106,6 +108,7 @@ class ROBIN {
             }
             
         }
+
         console.log('referencias', memReal.referencias);
         for (const i in this.processos) {
             estados.push( this.processos[i].estado )

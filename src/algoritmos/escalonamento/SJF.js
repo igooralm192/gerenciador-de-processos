@@ -19,7 +19,6 @@ class SJF {
     }
 
     proximoEstado(tempo, processoAtual, memVirtual, memReal) {
-        let terminou = true;
         let estados = [];
         
         for (const i in this.processos) {
@@ -63,10 +62,10 @@ class SJF {
 
         while (processoAtual == null && this.filaProntos.length != 0) {
             let topo = this.filaProntos.dequeue();  
+            memReal.atualizaReferencia(topo);
 
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
-
                     memReal.alocaPaginas(processoAtual, topo, this.qtdPaginas, memVirtual);
 
                     topo.estado = "Espera - FP";
@@ -74,21 +73,18 @@ class SJF {
                     this.filaProntos.queue(topo);
 
                 } else {
-                    console.log('oiii')
                     topo.tempoDecorrido = 1;
                     if (this.filaDisco.vazio()) {
-                        console.log('vazioo')
                         topo.estado = "Disco";
                         this.filaDisco.push(topo);
                     } else {
-                        console.log('nao vazioo')
                         topo.estado = "Espera - D";
                         this.filaDisco.push(topo);
                     }
                 }
             } else {
                 topo.estado = "Execução";
-                memReal.atualizaReferencia(topo);
+                
                 if (topo.tempoExecucao == 0) {
                     topo.estado = "Acabou";
                     processoAtual = null;
@@ -97,7 +93,6 @@ class SJF {
                     processoAtual = topo;
                     break;
                 }
-                
             }
             
         }

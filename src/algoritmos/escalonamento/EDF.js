@@ -59,7 +59,7 @@ class EDF {
                 } else if ((processoAtual.tempoDecorrido < this.quantum) && (processoAtual.tempoExecucaoAux > 0)) {
                     processoAtual.tempoDecorrido++;
                     processoAtual.tempoExecucaoAux--;
-                    if(processoAtual.deadlineAux < tempo){
+                    if(processoAtual.deadlineAux <= tempo){
                         processoAtual.estado = "Deadline";
                     }
                 }else if (processoAtual.tempoExecucaoAux == 0){
@@ -80,6 +80,7 @@ class EDF {
             let topo = this.filaProntos.dequeue();  
 
             memReal.atualizaReferencia(topo);
+
             if (!topo.verificaPaginas(memVirtual, this.qtdPaginas)) {
                 if (this.tempoDisco == 0) {
 
@@ -100,7 +101,7 @@ class EDF {
                     }
                 }
             } else {
-                if(topo.deadlineAux < tempo) topo.estado = "Deadline";
+                if(topo.deadlineAux <= tempo) topo.estado = "Deadline";
                 else topo.estado = "Execução";
                 
                 if (topo.tempoExecucaoAux == 0) {

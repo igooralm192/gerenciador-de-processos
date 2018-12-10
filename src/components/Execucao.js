@@ -11,8 +11,6 @@ import { MemMRU } from '../algoritmos/substituicao/MRU';
 import 'semantic-ui-range/range.css'
 import 'semantic-ui-range/range.js'
 
-
-
 class Execucao extends Component {
     constructor(props) {
         super(props);
@@ -91,6 +89,7 @@ class Execucao extends Component {
         let alterarVelocidade = this.alterarVelocidade;
         let parar = this.parar;
         let setState = this.setState;
+        
 
         $(".ui.menu .item").tab({
             onLoad: function(path) {
@@ -403,7 +402,6 @@ class Execucao extends Component {
                 filaDisco.push("P"+this.state.filaDisco.fila[i].id);
             }
         }
-        
         return (
             <div className="ui grid">
                 <div className="row info">
@@ -565,12 +563,21 @@ class Execucao extends Component {
                                     pagsVirtuais.map((coluna, i) => (
                                         <div key={i} className="coluna-pags">
                                             {
-                                                coluna != null && coluna.map((v, j) => (
-                                                    <div className="pagina">
-                                                        <div className="referencia">{v}</div>
-                                                        <div className="id">{i+this.props.dadosEntrada.qtdPaginas*j}</div>
-                                                    </div>
-                                                ))
+                                                coluna != null && coluna.map((v, j) => {
+                                                    let st = {}
+                                                    if (this.state.estruturas.memoriaReal.ultimasModificacoes.indexOf(v) != -1) {
+                                                        st = {
+                                                            backgroundColor: "#333",
+                                                            color: "white"
+                                                        }
+                                                    } 
+                                                    return (
+                                                        <div className="pagina">
+                                                            <div style={st} className="referencia">{v}</div>
+                                                            <div className="id">{i+this.props.dadosEntrada.qtdPaginas*j}</div>
+                                                        </div>
+                                                    )
+                                                })
                                             }
                                             
                                         </div>

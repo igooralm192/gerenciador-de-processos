@@ -1,6 +1,8 @@
 class MemFIFO {
+
     constructor() {
         this.indiceAtual = 0;
+        this.referencias = [];
         this.memoria = Array(50).fill(null);
         this.ultimasModificacoes = [];
     }
@@ -10,40 +12,51 @@ class MemFIFO {
         if (this.indiceAtual == 50) this.indiceAtual = 0;
     }
 
-    atualizaReferencia() {}
+    atualizaReferencia(processo) {
+        
+    }
 
     alocaPaginas(atual, processo, qtdPaginas, memVirtual) {
         let ini = (processo.id-1)*qtdPaginas;
-        
+
         for (let j=ini; j<ini+qtdPaginas; j++) {
-            let ok = true;
             let ind = this.indiceAtual;
 
             if (memVirtual[j] != null) continue;
 
             if (this.memoria[ind] != null) {
-                let ant = ind;
-                let indProcesso = Math.floor(this.memoria[ind]/qtdPaginas)+1;
-                while ((atual != null && indProcesso == atual.id) || indProcesso == processo.id) {
-                    this.proximoIndice();
-                    ind = this.indiceAtual;
-                    if (ind == ant) {
-                        ok = false;
-                        break;
-                    }
-                    indProcesso = Math.floor(this.memoria[ind]/qtdPaginas)+1;
+                let i = 0;
+                
+                while (
+                    i<this.referencias.length && 
+                    ((atual != null && this.referencias[i].id == atual.id && atual.estado != "Sobrecarga") || 
+                    this.referencias[i].id == processo.id)) i++;
+
+                if (i == this.referencias.length) {
+                    break;
                 }
-                if (!ok) break;
-                memVirtual[ this.memoria[ind] ] = null;
-            } 
+                
+                let menorRef = this.referencias[i];
+                this.referencias.splice(i, 1);
+                
+                memVirtual[menorRef.pagina] = null;
+                this.memoria[menorRef.referencia] = j;
+                memVirtual[j] = menorRef.referencia;
+                this.referencias.push({id: processo.id, pagina: j, referencia: menorRef.referencia});
+                this.ultimasModificacoes.push(menorRef.referencia);
 
-            this.memoria[ind] = j;
-            memVirtual[j] = ind;
-            this.ultimasModificacoes.push(ind);
+            } else {
+                this.memoria[ind] = j;
+                memVirtual[j] = ind;
+                this.referencias.push({id: processo.id, pagina: j, referencia: ind});
+                this.ultimasModificacoes.push(ind)
 
-            this.proximoIndice();
-            
+                this.proximoIndice();
+            }
         }
+
+
+        console.log('referencias',this.referencias)
     }
 }
 

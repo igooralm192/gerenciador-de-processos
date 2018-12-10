@@ -47,7 +47,7 @@ class MemMRU {
                 
                 while (
                     i<this.referencias.length && 
-                    ((atual != null && this.referencias[i].id == atual.id) || 
+                    ((atual != null && this.referencias[i].id == atual.id && atual.estado != "Sobrecarga") || 
                     this.referencias[i].id == processo.id || 
                     this.referencias[i].paginas.length == 0)
                     ) i++;
